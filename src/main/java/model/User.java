@@ -11,8 +11,8 @@ package model;
  */
 public class User {
   private Integer userId;
-  private String pNome;
-  private String sNome;
+  private String nome;
+  private String sobrenome;
   private String email;
   private String senha;
   private String funcao;
@@ -34,29 +34,29 @@ public class User {
     /**
      * @return the pNome
      */
-    public String getpNome() {
-        return pNome;
+    public String getNome() {
+        return nome;
     }
 
     /**
-     * @param pNome the pNome to set
+     * @param nome the pNome to set
      */
-    public void setpNome(String pNome) {
-        this.pNome = pNome;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     /**
      * @return the sNome
      */
-    public String getsNome() {
-        return sNome;
+    public String getSobrenome() {
+        return sobrenome;
     }
 
     /**
-     * @param sNome the sNome to set
+     * @param sobrenome the sNome to set
      */
-    public void setsNome(String sNome) {
-        this.sNome = sNome;
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
     }
 
     /**
