@@ -21,8 +21,8 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th class="col-lg-5 h4">ID</th>
-                            <th class="col-lg-2 h4">Nome</th>
+                            <th class="col-lg-2 h4">ID</th>
+                            <th class="col-lg-5 h4">Nome</th>
                             <th class="col-lg-4 h4 text-center">Ação</th>
                             <th class="col-lg-1 h4 text-center">Excluir?</th>
                         </tr>

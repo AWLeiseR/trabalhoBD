@@ -34,17 +34,17 @@ public class PgUserDAO implements DAO<User> {
                                 "WHERE userId = ?;";
 
     private static final String UPDATE_QUERY =
-                                "UPDATE revista.user " +
+                                "UPDATE revista.users " +
                                 "SET nome= ?,  sobrenome= ?, email= ?, funcao=?  " +
-                                "WHERE userId = ?;";
+                                "WHERE userid = ?;";
 
     private static final String UPDATE_WITH_PASSWORD_QUERY =
-                                "UPDATE revista.user " +
+                                "UPDATE revista.users " +
                                 "SET nome= ?, sobrenome= ?, email= ?, funcao=? , senha = md5(?) " +
-                                "WHERE userId = ?;";
+                                "WHERE userid = ?;";
 
     private static final String DELETE_QUERY =
-                                "DELETE FROM revista.user " +
+                                "DELETE FROM revista.users " +
                                 "WHERE userId = ?;";
 
     private static final String ALL_QUERY =
@@ -65,7 +65,7 @@ public class PgUserDAO implements DAO<User> {
     public void create(User t) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY)) {
             
-            statement.setString(1, Integer.toString(t.getUserId()));
+            statement.setInt(1, t.getUserId());
             statement.setString(2, t.getNome());
             statement.setString(3, t.getSobrenome());
             statement.setString(4, t.getEmail());
@@ -134,6 +134,7 @@ public class PgUserDAO implements DAO<User> {
             statement.setString(1, t.getNome());
             statement.setString(2, t.getSobrenome());
             statement.setString(3, t.getEmail());
+            statement.setString(4, t.getFuncao());
 
             if (t.getSenha() == null) {
                
