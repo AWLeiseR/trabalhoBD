@@ -45,12 +45,12 @@ public class PgUserDAO implements DAO<User> {
 
     private static final String DELETE_QUERY =
                                 "DELETE FROM revista.users " +
-                                "WHERE userId = ?;";
+                                "WHERE userid = ?;";
 
     private static final String ALL_QUERY =
                                 "SELECT userid, nome " +
                                 "FROM revista.users " +
-                                "ORDER BY userId;";
+                                "ORDER BY userid;";
 
    /* private static final String AUTHENTICATE_QUERY =
                                 "SELECT id, pnome, snome " +

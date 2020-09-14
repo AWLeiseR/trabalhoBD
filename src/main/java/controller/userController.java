@@ -31,7 +31,8 @@ import java.util.Random;
         urlPatterns = {
             "/user",
             "/user/create",
-            "/user/update"})
+            "/user/update",
+            "/user/delete"})
 public class userController extends HttpServlet {
     
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -77,7 +78,22 @@ public class userController extends HttpServlet {
                     request.setAttribute("user", user);
 
                     dispatcher = request.getRequestDispatcher("/view/user/update.jsp");
-                    dispatcher.forward(request, response);
+                dispatcher.forward(request, response);
+                } catch (ClassNotFoundException | IOException | SQLException ex) {
+                    request.getSession().setAttribute("error", ex.getMessage());
+                    response.sendRedirect(request.getContextPath() + "/user");
+                }
+                
+                break;
+            }
+            case "/user/delete":{
+                try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
+                    dao = daoFactory.getDAO();
+                    dao.delete(Integer.parseInt(request.getParameter("id")));
+                    
+                    dispatcher = request.getRequestDispatcher("/view/user/index.jsp");
+                    dispatcher.forward(request, response);                    
+
                 } catch (ClassNotFoundException | IOException | SQLException ex) {
                     request.getSession().setAttribute("error", ex.getMessage());
                     response.sendRedirect(request.getContextPath() + "/user");
