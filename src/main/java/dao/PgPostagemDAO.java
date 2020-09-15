@@ -25,38 +25,33 @@ import model.Postagem;
 public class PgPostagemDAO implements DAO<Postagem>  {
     
     private final Connection connection;
-
-    private static final String CREATE_QUERY =
-                                "INSERT INTO revista.users(userid, nome, sobrenome, email, senha, funcao) " +
-                                "VALUES(?,?,?,?, md5(?),?);";
-
-    private static final String READ_QUERY =
-                                "SELECT nome, sobrenome, email,funcao " +
-                                "FROM revista.users " +
-                                "WHERE userId = ?;";
-
-    private static final String UPDATE_QUERY =
-                                "UPDATE revista.users " +
-                                "SET nome= ?,  sobrenome= ?, email= ?, funcao=?  " +
-                                "WHERE userid = ?;";
-
-    private static final String DELETE_QUERY =
-                                "DELETE FROM revista.users " +
-                                "WHERE userid = ?;";
-
-    private static final String ALL_QUERY =
-                                "SELECT userid, nome " +
-                                "FROM revista.users " +
-                                "ORDER BY userid;";
-
-   /* private static final String AUTHENTICATE_QUERY =
-                                "SELECT id, pnome, snome " +
-                                "FROM j2ee.user " +
-                                "WHERE email = ? AND senha = md5(?);";*/
-
+    
     public PgPostagemDAO(Connection connection) {
         this.connection = connection;
     }
+
+    private static final String CREATE_QUERY =
+                                "INSERT INTO revista.postagem(postagemid,titulo,subtitulo,descricao,conteudo,visualizacoes,createAt,alteradoAt) " +
+                                "VALUES(?,?,?,?,?,?,?,?);";
+
+    private static final String READ_QUERY =
+                                "SELECT titulo,subtitulo,descricao,conteudo,visualizacoes,createAt,alteradoAt " +
+                                "FROM revista.postagem " +
+                                "WHERE postagemid = ?;";
+
+    private static final String UPDATE_QUERY =
+                                "UPDATE revista.postagem " +
+                                "SET titulo= ?,  subtitulo= ?, descricao=?,conteudo=? " +
+                                "WHERE postagemid = ?;";
+
+    private static final String DELETE_QUERY =
+                                "DELETE FROM revista.postagem " +
+                                "WHERE postagemid = ?;";
+
+    private static final String ALL_QUERY =
+                                "SELECT postagemid, titulo " +
+                                "FROM revista.postagem " +
+                                "ORDER BY postagemid;";
 
     @Override
     public void create(Postagem t) throws SQLException {
@@ -69,16 +64,16 @@ public class PgPostagemDAO implements DAO<Postagem>  {
             statement.setString(5, t.getConteudo());
             statement.setInt(6, t.getVisualizacoes());
             statement.setDate(7, t.getCreateAt());
-            statement.setDate(7, t.getCreateAt());
+            statement.setDate(8, t.getCreateAt());
 
             statement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
 
              if (ex.getMessage().contains("not-null")) {
-                throw new SQLException("Erro ao inserir usuário: pelo menos um campo está em branco.");
+                throw new SQLException("Erro ao inserir postagem: pelo menos um campo está em branco.");
             } else {
-                throw new SQLException("Erro ao inserir usuário.");
+                throw new SQLException("Erro ao inserir postagem.");
             }
         }
     }
@@ -101,7 +96,7 @@ public class PgPostagemDAO implements DAO<Postagem>  {
                     post.setAlteradoAt(result.getDate("alteradoat"));
                     
                 } else {
-                    throw new SQLException("Erro ao visualizar: usuário não encontrado.");
+                    throw new SQLException("Erro ao visualizar: postagem não encontrado.");
                 }
             }
         } catch (SQLException ex) {
@@ -131,9 +126,7 @@ public class PgPostagemDAO implements DAO<Postagem>  {
             statement.setInt(4, t.getVisualizacoes());
             statement.setDate(4, t.getAlteradoAt());
             statement.setInt(5, t.getPostagemId());
-              
             
-
             if (statement.executeUpdate() < 1) {
                 throw new SQLException("Erro ao editar: postagem não encontrado.");
             }
@@ -177,9 +170,8 @@ public class PgPostagemDAO implements DAO<Postagem>  {
              ResultSet result = statement.executeQuery()) {
             while (result.next()) {
                 Postagem post = new Postagem();
-                post.setPostagemId(result.getInt("postId"));
+                post.setPostagemId(result.getInt("postagemId"));
                 post.setTitulo(result.getString("titulo"));
-
                 postList.add(post);
             }
         } catch (SQLException ex) {

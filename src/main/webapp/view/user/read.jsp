@@ -14,7 +14,7 @@
         <title>View profile</title>
     </head>
     <body>
-        <div>
+        <div class="container">
             <table class="table table-striped">
                     <thead>
                         <tr>

@@ -33,13 +33,13 @@ public class PgAreaDAO implements DAO<AreasDeInteresse>  {
                                 "VALUES(?,?);";
      
      private static final String READ_QUERY =
-                                "SELECT nome, " +
+                                "SELECT nome " +
                                 "FROM revista.areas " +
                                 "WHERE areasid = ?;";
      
      private static final String UPDATE_QUERY =
                                 "UPDATE revista.areas " +
-                                "SET nome= ?,   " +
+                                "SET nome= ?" +
                                 "WHERE areasid = ?;";
 
     private static final String DELETE_QUERY =
@@ -50,17 +50,15 @@ public class PgAreaDAO implements DAO<AreasDeInteresse>  {
                                 "SELECT areasid, nome " +
                                 "FROM revista.areas " +
                                 "ORDER BY areasid;";
-     
-    
     
     @Override
     public void create(AreasDeInteresse t) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY)) {
             
             statement.setInt(1, t.getAreaId());
-            System.out.println(t.getAreaId());
+            
             statement.setString(2, t.getNome());
-            System.out.println(t.getNome());
+            
             
             statement.executeUpdate();
         } catch (SQLException ex) {
@@ -76,17 +74,73 @@ public class PgAreaDAO implements DAO<AreasDeInteresse>  {
 
     @Override
     public AreasDeInteresse read(Integer id) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        AreasDeInteresse area = new AreasDeInteresse();
+
+        try (PreparedStatement statement = connection.prepareStatement(READ_QUERY)) {
+            statement.setInt(1, id);
+            
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    area.setNome(result.getString("nome"));
+                    area.setAreaId(id);
+                } else {
+                    throw new SQLException("Erro ao visualizar: area não encontrado.");
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+            
+            if (ex.getMessage().equals("Erro ao visualizar: area não encontrado.")) {
+                throw ex;
+            } else {
+                throw new SQLException("Erro ao visualizar area.");
+            }
+        }
+
+        return area;
     }
 
     @Override
     public void update(AreasDeInteresse t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String query;
+            
+                query = UPDATE_QUERY;
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, t.getNome());
+            statement.setInt(2, t.getAreaId());
+            if (statement.executeUpdate() < 1) {
+                throw new SQLException("Erro ao editar: area não encontrado.");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            if (ex.getMessage().equals("Erro ao editar: area não encontrado.")) {
+                throw ex;
+            } else if (ex.getMessage().contains("not-null")) {
+                throw new SQLException("Erro ao editar a area: pelo menos um campo está em branco.");
+            } else {
+                throw new SQLException("Erro ao editar area.");
+            }
+        }
     }
 
     @Override
     public void delete(Integer id) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try (PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
+            statement.setInt(1, id);
+            if (statement.executeUpdate() < 1) {
+                throw new SQLException("Erro ao excluir: area não encontrado.");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            if (ex.getMessage().equals("Erro ao excluir: area não encontrado.")) {
+                throw ex;
+            } else {
+                throw new SQLException("Erro ao excluir area.");
+            }
+        }
     }
 
     @Override

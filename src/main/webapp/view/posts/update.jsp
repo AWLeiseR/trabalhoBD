@@ -8,6 +8,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <%@include file="/view/includes/head.jsp" %>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Edidção de Postagem</title>
     </head>
@@ -17,32 +18,31 @@
 
             <form
                 class="form"
-                action="${pageContext.servletContext.contextPath}/posts/create"
+                action="${pageContext.servletContext.contextPath}/posts/update"
                 <%--enctype="multipart/form-data"--%>
                 method="POST">
                 
+                <input type="hidden" name="postagemId" value="${post.postagemId}">
+                
                 <div class="form-group">
-                    <label for="usuario-nome" class="control-label">Título</label>
-                    <input id="usuario-nome" class="form-control" type="text" name="nome" required autofocus/>
+                    <label for="post-titulo" class="control-label">Título</label>
+                    <input id="post-titulo" class="form-control" type="text" name="titulo" value="${post.titulo}" required autofocus/>
                 </div>
                 
                 <div class="form-group">
-                    <label for="usuario-sobrenome" class="control-label">Subtitulo</label>
-                    <input id="usuario-sobrenome" class="form-control" type="text" name="sobrenome" required/>
+                    <label for="post-subtitulo" class="control-label">Subtitulo</label>
+                    <input id="post-subtitulo" class="form-control" type="text" name="subtitulo" value="${post.subtitulo}" required/>
                 </div>
                 
                 <div class="form-group">
-                    <label class="control-label" for="usuario-email">conteudo</label>
-                    <input id="usuario-email" class="form-control" type="text" name="email" required />
-
-                    <p class="help-block"></p>
+                    <label class="control-label" for="post-descricao">Descricao</label>
+                    <input id="post-descricao" class="form-control" type="text" name="descricao" value="${post.descricao}" required />
                 </div>
-               
+                
                 <div class="form-group">
-                    <label class="control-label">Área</label>
-                    <input class="form-control" d="usuario-funcao" type="text" name="funcao" required/>
+                    <label class="control-label" for="post-conteudo">Conteudo</label>
+                    <textarea id="post-conteudo" class="form-control" type="text" name="conteudo" required >${post.conteudo}</textarea>
                 </div>
-
                 <div class="text-center">
                     <button class="btn btn-lg btn-primary" type="submit">Salvar</button>
                 </div>

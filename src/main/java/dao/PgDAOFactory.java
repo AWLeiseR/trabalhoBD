@@ -18,8 +18,18 @@ public class PgDAOFactory extends DAOFactory {
     }
 
     @Override
-    public DAO getDAO() {
+    public DAO getUserDAO() {
         return new PgUserDAO(this.connection);
+    }
+
+    @Override
+    public DAO getAreaDAO() {
+        return new PgAreaDAO(this.connection);
+    }
+
+    @Override
+    public DAO getPostagemDAO() {
+        return new PgPostagemDAO(this.connection);
     }
 
 }

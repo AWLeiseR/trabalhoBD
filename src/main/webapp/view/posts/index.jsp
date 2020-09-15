@@ -5,9 +5,11 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
     <head>
+        <%@include file="/view/includes/head.jsp" %>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Postagens</title>
     </head>
@@ -28,28 +30,29 @@
                         <c:forEach var="post" items="${requestScope.postList}">
                             <tr>
                                 <td>
-                                    <span class="h4"><c:out value="${post.postId}"/></span>
+                                    <span class="h4"><c:out value="${post.postagemId}"/></span>
                                 </td>
                                 <td>
+                                    <a href="${pageContext.servletContext.contextPath}/posts/read?id=${post.postagemId}">
                                         <span class="h4"><c:out value="${post.titulo}"/></span>
+                                    </a>
                                 </td>
                                 <td class="text-center">
                                     <a class="btn btn-default"
-                                       href="${pageContext.servletContext.contextPath}/posts/update?id=${post.postId}"
+                                       href="${pageContext.servletContext.contextPath}/posts/update?id=${post.postagemId}"
                                        data-toggle="tooltip"
                                        data-original-title="Editar">
                                         <i class="fa fa-pencil"></i>
                                     </a>
                                     <a class="btn btn-default link_excluir_area"
-                                       href="#"
-                                       data-href="${pageContext.servletContext.contextPath}/posts/delete?id=${post.postId}"
+                                       href="${pageContext.servletContext.contextPath}/posts/delete?id=${post.postagemId}"
                                        data-toggle="tooltip"
                                        data-original-title="Excluir">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </td>
                                 <td class="text-center">
-                                    <input class="checkbox-inline" type="checkbox" name="delete" value="${post.postId}" />
+                                    <input class="checkbox-inline" type="checkbox" name="delete" value="${post.postagemId}" />
                                 </td>
                             </tr>
                         </c:forEach>

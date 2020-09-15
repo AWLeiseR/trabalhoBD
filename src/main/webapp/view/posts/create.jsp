@@ -24,25 +24,28 @@
                 method="POST">
                 
                 <div class="form-group">
-                    <label for="usuario-nome" class="control-label">Título</label>
-                    <input id="usuario-nome" class="form-control" type="text" name="nome" required autofocus/>
+                    <label for="postagem-titulo" class="control-label">Título</label>
+                    <input id="postagem-titulo" class="form-control" type="text" name="titulo" required autofocus/>
                 </div>
                 
                 <div class="form-group">
-                    <label for="usuario-sobrenome" class="control-label">Subtitulo</label>
-                    <input id="usuario-sobrenome" class="form-control" type="text" name="sobrenome" required/>
+                    <label for="postagem-subtitulo" class="control-label">Subtitulo</label>
+                    <input id="postagem-subtitulo" class="form-control" type="text" name="subtitulo" required/>
                 </div>
                 
                 <div class="form-group">
-                    <label class="control-label" for="usuario-email">conteudo</label>
-                    <input id="usuario-email" class="form-control" type="text" name="email" required />
-
-                    <p class="help-block"></p>
+                    <label for="postagem-descricao" class="control-label">Descricao</label>
+                    <input id="postagem-descricao" class="form-control" type="text" name="descricao" required/>
+                </div>
+                
+                <div class="form-group">
+                    <label class="control-label" for="postagem-conteudo">Conteúdo</label>
+                    <textarea id="postagem-conteudo" class="form-control" type="text" name="conteudo" rows="10" required ></textarea>
                 </div>
                
                 <div class="form-group">
                     <label class="control-label">Área</label>
-                    <input class="form-control" d="usuario-funcao" type="text" name="funcao" required/>
+                    <input class="form-control" d="postagem-area" type="text" name="area" required/>
                 </div>
 
                 <div class="text-center">

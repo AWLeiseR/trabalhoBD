@@ -11,7 +11,7 @@
 <html>
     <head>
         <%@include file="/view/includes/head.jsp"%>
-        <title>[BD 2020] Areas</title>
+        <title>Areas</title>
     </head>
     <body>
 
@@ -28,7 +28,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="area" items="${requestScope.areaList}">
+                        <c:forEach var="area" items="${requestScope.areasList}">
                             <tr>
                                 <td>
                                     <span class="h4"><c:out value="${area.areaId}"/></span>
@@ -38,14 +38,13 @@
                                 </td>
                                 <td class="text-center">
                                     <a class="btn btn-default"
-                                       href="${pageContext.servletContext.contextPath}/area/update?id=${area.areaId}"
+                                       href="${pageContext.servletContext.contextPath}/areas/update?id=${area.areaId}"
                                        data-toggle="tooltip"
                                        data-original-title="Editar">
                                         <i class="fa fa-pencil"></i>
                                     </a>
                                     <a class="btn btn-default link_excluir_area"
-                                       href="#"
-                                       data-href="${pageContext.servletContext.contextPath}/area/delete?id=${area.areaId}"
+                                       href="${pageContext.servletContext.contextPath}/areas/delete?id=${area.areaId}"
                                        data-toggle="tooltip"
                                        data-original-title="Excluir">
                                         <i class="fa fa-trash"></i>

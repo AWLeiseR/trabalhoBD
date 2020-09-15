@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Random;
+import java.sql.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -21,7 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Postagem;
-import model.User;
+
 
 /**
  *
@@ -33,6 +34,7 @@ import model.User;
             "/posts",
             "/posts/create",
             "/posts/update",
+            "/posts/read",
             "/posts/delete"})
 public class postagemController extends HttpServlet {
 
@@ -56,7 +58,7 @@ public class postagemController extends HttpServlet {
             switch (request.getServletPath()) {
                 case "/posts": {
                     try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
-                        dao = daoFactory.getDAO();
+                        dao = daoFactory.getPostagemDAO();
 
                         List<Postagem> postList = dao.all();
                         request.setAttribute("postList", postList);
@@ -75,7 +77,7 @@ public class postagemController extends HttpServlet {
                 }
                 case "/posts/update":{
                     try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
-                        dao = daoFactory.getDAO();
+                        dao = daoFactory.getPostagemDAO();
 
                         post = dao.read(Integer.parseInt(request.getParameter("id")));
                         request.setAttribute("post", post);
@@ -89,9 +91,26 @@ public class postagemController extends HttpServlet {
 
                     break;
                 }
+                
+                case "/user/read":{
+                try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
+                    dao = daoFactory.getPostagemDAO();
+
+                    post = dao.read(Integer.valueOf(request.getParameter("id")));
+                    request.setAttribute("post", post);
+
+                    dispatcher = request.getRequestDispatcher("/view/posts/read.jsp");
+                    dispatcher.forward(request, response);
+                } catch (ClassNotFoundException | IOException | SQLException ex) {
+                    request.getSession().setAttribute("error", ex.getMessage());
+                    response.sendRedirect(request.getContextPath() + "/posts");
+                }
+                break;
+            }
+                
                 case "/posts/delete":{
                     try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
-                        dao = daoFactory.getDAO();
+                        dao = daoFactory.getPostagemDAO();
                         dao.delete(Integer.parseInt(request.getParameter("id")));
 
                         dispatcher = request.getRequestDispatcher("/view/posts/index.jsp");
@@ -120,32 +139,32 @@ public class postagemController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         DAOFactory daoFactory;
-           /* try {
+            try {
                 daoFactory = DAOFactory.getInstance();
-                DAO<User> dao=daoFactory.getDAO();
+                DAO<Postagem> dao=daoFactory.getPostagemDAO();
                 Postagem post =new Postagem();
                 RequestDispatcher dispatcher;
                 String servletPath = request.getServletPath();
-                String nome= request.getParameter("titulo");
-                if(!"".equals(nome)){
-                    post.setNome(nome);
+                String titulo= request.getParameter("titulo");
+                if(!"".equals(titulo)){
+                    post.setTitulo(titulo);
                 }
-                String sobrenome= request.getParameter("subtitulo");
-                if(!"".equals(sobrenome)){
-                    post.setSobrenome(sobrenome);
+                String subtitulo= request.getParameter("subtitulo");
+                if(!"".equals(subtitulo)){
+                    post.setSubtitulo(subtitulo);
                 }               
-                String email= request.getParameter("email");
-                if(!"".equals(email)){
-                    post.setEmail(email);
+                String descricao= request.getParameter("descricao");
+                if(!"".equals(descricao)){
+                    post.setDescricao(descricao);
                 }
 
-                String senha= request.getParameter("senha");
-                if(!"".equals(senha)){
-                    post.setSenha(senha);
+                String conteudo= request.getParameter("conteudo");
+                if(!"".equals(conteudo)){
+                    post.setConteudo(conteudo);
                 }
-                String funcao= request.getParameter("funcao");
-                if(!"".equals(funcao)){
-                    post.setFuncao(funcao);
+                String area= request.getParameter("area");
+                if(!"".equals(area)){
+                    //post.setArea(area);
                 }
 
                 switch (request.getServletPath()) {
@@ -155,8 +174,11 @@ public class postagemController extends HttpServlet {
                         try {
                             Random generate= new Random();
                             int id=generate.nextInt(1000);
-                            post.setUserId(id);
-
+                            post.setPostagemId(id);
+                            long millis=System.currentTimeMillis();  
+                            java.sql.Date data=new java.sql.Date(millis);  
+                            post.setCreateAt(data);
+                            post.setAlteradoAt(data);
                             dao.create(post);
 
                         } catch (SQLException ex) {
@@ -166,10 +188,10 @@ public class postagemController extends HttpServlet {
                     }
                     case "/posts/update":{
                         try{
-                            int userId; 
-                            userId = Integer.valueOf(request.getParameter("postagemId"));
+                            int postagemId; 
+                            postagemId = Integer.valueOf(request.getParameter("postagemId"));
 
-                           post.setUserId(userId);
+                           post.setPostagemId(postagemId);
 
                             dao.update(post);
                         } catch (SQLException ex) {
@@ -182,7 +204,7 @@ public class postagemController extends HttpServlet {
                  response.sendRedirect(request.getContextPath() + "/posts");
             } catch (ClassNotFoundException | SQLException ex) {
                 Logger.getLogger(userController.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
+            }
 
     }
 

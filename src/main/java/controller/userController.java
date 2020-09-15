@@ -35,7 +35,6 @@ import java.util.Random;
             "/user/update",
             "/user/delete"})
 public class userController extends HttpServlet {
-    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -54,7 +53,7 @@ public class userController extends HttpServlet {
         switch (request.getServletPath()) {
             case "/user": {
                 try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
-                    dao = daoFactory.getDAO();
+                    dao = daoFactory.getUserDAO();
 
                     List<User> userList = dao.all();
                     request.setAttribute("userList", userList);
@@ -73,7 +72,7 @@ public class userController extends HttpServlet {
             }
             case "/user/read":{
                 try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
-                    dao = daoFactory.getDAO();
+                    dao = daoFactory.getUserDAO();
 
                     user = dao.read(Integer.parseInt(request.getParameter("id")));
                     request.setAttribute("user", user);
@@ -88,7 +87,7 @@ public class userController extends HttpServlet {
             }
             case "/user/update":{
                 try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
-                    dao = daoFactory.getDAO();
+                    dao = daoFactory.getUserDAO();
 
                     user = dao.read(Integer.parseInt(request.getParameter("id")));
                     request.setAttribute("user", user);
@@ -104,8 +103,8 @@ public class userController extends HttpServlet {
             }
             case "/user/delete":{
                 try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
-                    dao = daoFactory.getDAO();
-                    dao.delete(Integer.parseInt(request.getParameter("id")));
+                    dao = daoFactory.getUserDAO();
+                    dao.delete(Integer.valueOf(request.getParameter("id")));
                     
                     dispatcher = request.getRequestDispatcher("/view/user/index.jsp");
                     dispatcher.forward(request, response);                    
@@ -136,7 +135,7 @@ public class userController extends HttpServlet {
             DAOFactory daoFactory;
             try {
                 daoFactory = DAOFactory.getInstance();
-                DAO<User> dao=daoFactory.getDAO();
+                DAO<User> dao=daoFactory.getUserDAO();
                 User user=new User();
                 RequestDispatcher dispatcher;
                 String servletPath = request.getServletPath();
