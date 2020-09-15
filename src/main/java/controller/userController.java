@@ -31,6 +31,7 @@ import java.util.Random;
         urlPatterns = {
             "/user",
             "/user/create",
+            "/user/read",
             "/user/update",
             "/user/delete"})
 public class userController extends HttpServlet {
@@ -68,6 +69,21 @@ public class userController extends HttpServlet {
             case "/user/create":{
                 dispatcher = request.getRequestDispatcher("/view/user/create.jsp");
                 dispatcher.forward(request, response);
+                break;
+            }
+            case "/user/read":{
+                try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
+                    dao = daoFactory.getDAO();
+
+                    user = dao.read(Integer.parseInt(request.getParameter("id")));
+                    request.setAttribute("user", user);
+
+                    dispatcher = request.getRequestDispatcher("/view/user/read.jsp");
+                dispatcher.forward(request, response);
+                } catch (ClassNotFoundException | IOException | SQLException ex) {
+                    request.getSession().setAttribute("error", ex.getMessage());
+                    response.sendRedirect(request.getContextPath() + "/user");
+                }
                 break;
             }
             case "/user/update":{
@@ -118,70 +134,70 @@ public class userController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
             DAOFactory daoFactory;
-        try {
-            daoFactory = DAOFactory.getInstance();
-            DAO<User> dao=daoFactory.getDAO();
-            User user=new User();
-            RequestDispatcher dispatcher;
-            String servletPath = request.getServletPath();
-            String nome= request.getParameter("nome");
-            if(!"".equals(nome)){
-                user.setNome(nome);
-            }
-            String sobrenome= request.getParameter("sobrenome");
-            if(!"".equals(sobrenome)){
-                user.setSobrenome(sobrenome);
-            }               
-            String email= request.getParameter("email");
-            if(!"".equals(email)){
-                user.setEmail(email);
-            }
-            
-            String senha= request.getParameter("senha");
-            if(!"".equals(senha)){
-                user.setSenha(senha);
-            }
-            String funcao= request.getParameter("funcao");
-            if(!"".equals(funcao)){
-                user.setFuncao(funcao);
+            try {
+                daoFactory = DAOFactory.getInstance();
+                DAO<User> dao=daoFactory.getDAO();
+                User user=new User();
+                RequestDispatcher dispatcher;
+                String servletPath = request.getServletPath();
+                String nome= request.getParameter("nome");
+                if(!"".equals(nome)){
+                    user.setNome(nome);
+                }
+                String sobrenome= request.getParameter("sobrenome");
+                if(!"".equals(sobrenome)){
+                    user.setSobrenome(sobrenome);
+                }               
+                String email= request.getParameter("email");
+                if(!"".equals(email)){
+                    user.setEmail(email);
+                }
+
+                String senha= request.getParameter("senha");
+                if(!"".equals(senha)){
+                    user.setSenha(senha);
+                }
+                String funcao= request.getParameter("funcao");
+                if(!"".equals(funcao)){
+                    user.setFuncao(funcao);
+                }
+
+                switch (request.getServletPath()) {
+
+                    case "/user/create":{
+
+                        try {
+                            Random generate= new Random();
+                            int id=generate.nextInt(1000);
+                            user.setUserId(id);
+
+                            dao.create(user);
+
+                        } catch (SQLException ex) {
+                            Logger.getLogger(userController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        break;
+                    }
+                    case "/user/update":{
+                        try{
+                            int userId; 
+                            userId = Integer.valueOf(request.getParameter("userId"));
+
+                           user.setUserId(userId);
+
+                            dao.update(user);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(userController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        break;
+                    }
+
+                }
+                 response.sendRedirect(request.getContextPath() + "/user");
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(userController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            switch (request.getServletPath()) {
-                
-                case "/user/create":{
-                    
-                    try {
-                        Random generate= new Random();
-                        int id=generate.nextInt(1000);
-                        user.setUserId(id);
-                        
-                        dao.create(user);
-                        
-                    } catch (SQLException ex) {
-                        Logger.getLogger(userController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    break;
-                }
-                case "/user/update":{
-                    try{
-                        int userId; 
-                        userId = Integer.valueOf(request.getParameter("userId"));
-                        
-                       user.setUserId(userId);
-                        
-                        dao.update(user);
-                    } catch (SQLException ex) {
-                        Logger.getLogger(userController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    break;
-                }
-               
-            }
-             response.sendRedirect(request.getContextPath() + "/user");
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(userController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-            
     }
 
     /**

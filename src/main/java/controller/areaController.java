@@ -28,10 +28,9 @@ import model.AreasDeInteresse;
 @WebServlet(
         name = "AreaController",
         urlPatterns = {
-            "/area"})
+            "/areas"
+           })
 public class areaController extends HttpServlet {
-
-   
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -52,9 +51,9 @@ public class areaController extends HttpServlet {
                 try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
                     dao = daoFactory.getDAO();
 
-                    List<AreasDeInteresse> areaList = dao.all();
-                    request.setAttribute("areaList", areaList);
-                    dispatcher = request.getRequestDispatcher("/view/area/index.jsp");
+                    List<AreasDeInteresse> areasList = dao.all();
+                    request.setAttribute("areasList", areasList);
+                    dispatcher = request.getRequestDispatcher("/view/areas/index.jsp");
                     dispatcher.forward(request, response);
                 } catch (ClassNotFoundException | IOException | SQLException ex) {
                     request.getSession().setAttribute("error", ex.getMessage());

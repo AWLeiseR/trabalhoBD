@@ -29,27 +29,27 @@ public class PgAreaDAO implements DAO<AreasDeInteresse>  {
     }
     
      private static final String CREATE_QUERY =
-                                "INSERT INTO revista.areas(areaid, nome) " +
-                                "VALUES(?,?,?);";
+                                "INSERT INTO revista.areas(areasid, nome) " +
+                                "VALUES(?,?);";
      
      private static final String READ_QUERY =
                                 "SELECT nome, " +
                                 "FROM revista.areas " +
-                                "WHERE areaid = ?;";
+                                "WHERE areasid = ?;";
      
      private static final String UPDATE_QUERY =
                                 "UPDATE revista.areas " +
                                 "SET nome= ?,   " +
-                                "WHERE areaid = ?;";
+                                "WHERE areasid = ?;";
 
     private static final String DELETE_QUERY =
                                 "DELETE FROM revista.areas " +
-                                "WHERE areaid = ?;";
+                                "WHERE areasid = ?;";
 
     private static final String ALL_QUERY =
-                                "SELECT areaid, nome " +
+                                "SELECT areasid, nome " +
                                 "FROM revista.areas " +
-                                "ORDER BY areaid;";
+                                "ORDER BY areasid;";
      
     
     
@@ -58,8 +58,9 @@ public class PgAreaDAO implements DAO<AreasDeInteresse>  {
         try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY)) {
             
             statement.setInt(1, t.getAreaId());
+            System.out.println(t.getAreaId());
             statement.setString(2, t.getNome());
-            
+            System.out.println(t.getNome());
             
             statement.executeUpdate();
         } catch (SQLException ex) {
@@ -93,10 +94,10 @@ public class PgAreaDAO implements DAO<AreasDeInteresse>  {
         List<AreasDeInteresse> areaList = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(ALL_QUERY);
-             ResultSet result = statement.executeQuery()) {
+            ResultSet result = statement.executeQuery()) {
             while (result.next()) {
                 AreasDeInteresse area = new AreasDeInteresse();
-                area.setAreaId(result.getInt("areaId"));
+                area.setAreaId(result.getInt("areasId"));
                 area.setNome(result.getString("nome"));
 
                 areaList.add(area);

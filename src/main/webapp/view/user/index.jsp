@@ -11,7 +11,7 @@
 <html>
     <head>
         <%@include file="/view/includes/head.jsp"%>
-        <title>[BD 2020] Usuários</title>
+        <title>Usuários</title>
     </head>
     <body>
 
@@ -31,10 +31,12 @@
                         <c:forEach var="usuario" items="${requestScope.userList}">
                             <tr>
                                 <td>
-                                    <span class="h4"><c:out value="${usuario.userId}"/></span>
+                                        <span class="h4"><c:out value="${usuario.userId}"/></span>
                                 </td>
                                 <td>
+                                    <a href="${pageContext.servletContext.contextPath}/user/read?id=${usuario.userId}">
                                         <span class="h4"><c:out value="${usuario.nome}"/></span>
+                                    </a>
                                 </td>
                                 <td class="text-center">
                                     <a class="btn btn-default"
