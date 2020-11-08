@@ -55,6 +55,7 @@ public class postagemController extends HttpServlet {
             DAO<Postagem> dao;
             Postagem post;
             RequestDispatcher dispatcher;
+           
             switch (request.getServletPath()) {
                 case "/posts": {
                     try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
@@ -92,7 +93,7 @@ public class postagemController extends HttpServlet {
                     break;
                 }
                 
-                case "/user/read":{
+                case "/posts/read":{
                 try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
                     dao = daoFactory.getPostagemDAO();
 
@@ -113,7 +114,7 @@ public class postagemController extends HttpServlet {
                         dao = daoFactory.getPostagemDAO();
                         dao.delete(Integer.parseInt(request.getParameter("id")));
 
-                        dispatcher = request.getRequestDispatcher("/view/posts/index.jsp");
+                        dispatcher = request.getRequestDispatcher("/view/posts");
                         dispatcher.forward(request, response);                    
 
                     } catch (ClassNotFoundException | IOException | SQLException ex) {

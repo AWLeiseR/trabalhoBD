@@ -68,12 +68,7 @@
                 <button class="btn btn-lg btn-warning" data-toggle="modal" data-target=".modal_excluir_usuarios">
                     Excluir múltiplos usuários
                 </button>
-                <a class="btn btn-default"
-                   href="${pageContext.servletContext.contextPath}/logout"
-                   data-toggle="tooltip"
-                   data-original-title="Logout">
-                    <i class="fa fa-sign-out"></i>
-                </a>
+                
             </div>
         </div>  
                 

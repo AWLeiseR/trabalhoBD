@@ -41,7 +41,7 @@ public class PgPostagemDAO implements DAO<Postagem>  {
 
     private static final String UPDATE_QUERY =
                                 "UPDATE revista.postagem " +
-                                "SET titulo= ?,  subtitulo= ?, descricao=?,conteudo=? " +
+                                "SET titulo= ?,  subtitulo= ?, descricao=?,conteudo=?,visualizacoes=?,alteradoAt=? " +
                                 "WHERE postagemid = ?;";
 
     private static final String DELETE_QUERY =
@@ -119,13 +119,14 @@ public class PgPostagemDAO implements DAO<Postagem>  {
                 query = UPDATE_QUERY;
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
+            
             statement.setString(1, t.getTitulo());
             statement.setString(2, t.getSubtitulo());
-            statement.setString(3, t.getConteudo());
-            statement.setString(4, t.getDescricao());
-            statement.setInt(4, t.getVisualizacoes());
-            statement.setDate(4, t.getAlteradoAt());
-            statement.setInt(5, t.getPostagemId());
+            statement.setString(3, t.getDescricao());
+            statement.setString(4, t.getConteudo());
+            statement.setInt(5, t.getVisualizacoes());
+            statement.setDate(6, t.getAlteradoAt());
+            statement.setInt(7, t.getPostagemId());
             
             if (statement.executeUpdate() < 1) {
                 throw new SQLException("Erro ao editar: postagem não encontrado.");

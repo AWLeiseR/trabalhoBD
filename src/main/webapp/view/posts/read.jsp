@@ -25,7 +25,7 @@
                             <th class="col-lg-1 ">Conteudo</th>
                             <th class="col-lg-1 ">visualizacoes</th>
                             <th class="col-lg-1 ">CreateAt</th>
-                            <th class="col-lg-1 ">alteradoAt</th>
+                            <th class="col-lg-1 ">AlteradoAt</th>
                         </tr>
                     </thead>
                     <tbody>
