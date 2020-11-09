@@ -10,7 +10,51 @@ package model;
  * @author Alan
  */
 public class PostagemAreas {
+    
     private int idPostagemAreas;
     private int idPostagem;
     private int idAreas;
+    
+    /**
+     * @return the idPostagemAreas
+     */
+    public int getIdPostagemAreas() {
+        return idPostagemAreas;
+    }
+
+    /**
+     * @param idPostagemAreas the idPostagemAreas to set
+     */
+    public void setIdPostagemAreas(int idPostagemAreas) {
+        this.idPostagemAreas = idPostagemAreas;
+    }
+
+    /**
+     * @return the idPostagem
+     */
+    public int getIdPostagem() {
+        return idPostagem;
+    }
+
+    /**
+     * @param idPostagem the idPostagem to set
+     */
+    public void setIdPostagem(int idPostagem) {
+        this.idPostagem = idPostagem;
+    }
+
+    /**
+     * @return the idAreas
+     */
+    public int getIdAreas() {
+        return idAreas;
+    }
+
+    /**
+     * @param idAreas the idAreas to set
+     */
+    public void setIdAreas(int idAreas) {
+        this.idAreas = idAreas;
+    }
+    
 }
