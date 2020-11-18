@@ -36,6 +36,11 @@ public class PgDAOFactory extends DAOFactory {
     public DAO getUserAreasDAO() {
         return new PgUserAreasDAO(this.connection);
     }
+
+    @Override
+    public DAO getPstagemAreasDAO() {
+        return new PgPostagemAreasDAO(this.connection);
+    }
     
     
 }

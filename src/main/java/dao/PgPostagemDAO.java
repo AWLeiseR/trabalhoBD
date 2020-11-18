@@ -52,6 +52,11 @@ public class PgPostagemDAO implements DAO<Postagem>  {
                                 "SELECT postagemid, titulo " +
                                 "FROM revista.postagem " +
                                 "ORDER BY postagemid;";
+    
+    private static final String READ_QUERY_MAIS_NOVAS=
+                                 "select postagemid,titulo,subtitulo,descricao" +
+                                 "from revista.postagem " +
+                                 "order by createAt DESC limit 3";
 
     @Override
     public void create(Postagem t) throws SQLException {
@@ -173,6 +178,29 @@ public class PgPostagemDAO implements DAO<Postagem>  {
                 Postagem post = new Postagem();
                 post.setPostagemId(result.getInt("postagemId"));
                 post.setTitulo(result.getString("titulo"));
+                postList.add(post);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            throw new SQLException("Erro ao listar usuários.");
+        }
+
+        return postList;
+    }
+    
+    
+    public List<Postagem> maisRecentes() throws SQLException {
+       List<Postagem> postList = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(ALL_QUERY);
+             ResultSet result = statement.executeQuery()) {
+            while (result.next()) {
+                Postagem post = new Postagem();
+                post.setPostagemId(result.getInt("id"));
+                System.out.println("PRINT");
+                post.setTitulo(result.getString("titulo"));
+                post.setSubtitulo("subtitulo");
                 postList.add(post);
             }
         } catch (SQLException ex) {

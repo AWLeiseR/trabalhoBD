@@ -8,6 +8,7 @@ package dao;
 import java.sql.SQLException;
 import java.util.List;
 
+
 /**
  *
  * @author Alan
@@ -20,4 +21,5 @@ public interface DAO<T> {
     public void delete(Integer id) throws SQLException;
 
     public List<T> all() throws SQLException;    
+
 }

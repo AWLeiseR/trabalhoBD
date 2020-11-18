@@ -14,43 +14,47 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import model.PostagemAreas;
 import model.UserAreas;
 
 /**
  *
  * @author Alan
  */
-public class PgUserAreasDAO implements DAO<UserAreas> {
+public class PgPostagemAreasDAO implements DAO<PostagemAreas>{
 
     private final Connection connection; 
     
-    PgUserAreasDAO(Connection connection) {
+     PgPostagemAreasDAO(Connection connection) {
         this.connection = connection;
     }
     
+    
     private static final String CREATE_QUERY =
-                                "INSERT INTO revista.userareas(iduserareas,iduser,idareas) " +
+                                "INSERT INTO revista.postagemareas(idpostagemareas,idpostagem,idareas) " +
                                 "VALUES(?,?,?);";
      
-     private static final String READ_QUERY_USER =
-                                "SELECT iduser,idareas " +
-                                "FROM revista.userareas " +
-                                "WHERE iduser = ?;";
+     private static final String READ_QUERY_POSTAGEM =
+                                "SELECT idpostagem,idareas " +
+                                "FROM revista.postagemareas " +
+                                "WHERE idpostagem = ?;";
+     
+     
 
     private static final String DELETE_QUERY =
-                                "DELETE FROM revista.userareas " +
-                                "WHERE iduser = ?;";
+                                "DELETE FROM revista.postagemareas " +
+                                "WHERE idpostagem = ?;";
 
     private static final String ALL_QUERY =
-                                "SELECT iduserareas, iduser,idareas " +
-                                "FROM revista.userareas " +
-                                "ORDER BY iduser;";
-
-    @Override
-    public void create(UserAreas t) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY)){
+                                "SELECT idpostagemareas, idpostagem, idareas " +
+                                "FROM revista.postagemareas " +
+                                "ORDER BY idpostagem;";
+    
+        @Override
+    public void create(PostagemAreas t) throws SQLException {
+       try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY)){
             
-            statement.setInt(2, t.getIdUser());
+            statement.setInt(2, t.getIdPostagem());
             
             statement.setInt(3, t.getIdAreas());
             
@@ -67,16 +71,16 @@ public class PgUserAreasDAO implements DAO<UserAreas> {
     }
 
     @Override
-    public UserAreas read(Integer id) throws SQLException {
-         UserAreas userArea = new UserAreas();
+    public PostagemAreas read(Integer id) throws SQLException {
+        PostagemAreas postagemArea = new PostagemAreas();
 
-        try (PreparedStatement statement = connection.prepareStatement(READ_QUERY_USER)) {
+        try (PreparedStatement statement = connection.prepareStatement(READ_QUERY_POSTAGEM)) {
             statement.setInt(1, id);
             
             try (ResultSet result = statement.executeQuery()) {
                 if (result.next()) {
-                    userArea.setIdAreas(result.getInt("idareas"));
-                    userArea.setIdUser(id);
+                    postagemArea.setIdAreas(result.getInt("idareas"));
+                    postagemArea.setIdPostagem(id);
                 } else {
                     throw new SQLException("Erro ao visualizar: userArea não encontrado.");
                 }
@@ -91,17 +95,17 @@ public class PgUserAreasDAO implements DAO<UserAreas> {
             }
         }
 
-        return userArea;
+        return postagemArea;
     }
 
     @Override
-    public void update(UserAreas t) throws SQLException {
+    public void update(PostagemAreas t) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void delete(Integer id) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
+         try (PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
             statement.setInt(1, id);
             if (statement.executeUpdate() < 1) {
                 throw new SQLException("Erro ao excluir: area não encontrado.");
@@ -118,7 +122,7 @@ public class PgUserAreasDAO implements DAO<UserAreas> {
     }
 
     @Override
-    public List<UserAreas> all() throws SQLException {
+    public List<PostagemAreas> all() throws SQLException {
         List<AreasDeInteresse> areaList = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(ALL_QUERY);
@@ -138,5 +142,7 @@ public class PgUserAreasDAO implements DAO<UserAreas> {
 
         return areaList;
     }
+    
+    
     
 }
