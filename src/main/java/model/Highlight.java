@@ -9,12 +9,9 @@ package model;
  *
  * @author Alan
  */
-public class UserAreas {
-    
-    
+public class Highlight {
     private int idUser;
-    private int idAreas;
-    
+    private int idPostagem;
     /**
      * @return the idUser
      */
@@ -30,17 +27,17 @@ public class UserAreas {
     }
 
     /**
-     * @return the idAreas
+     * @return the idPostagem
      */
-    public int getIdAreas() {
-        return idAreas;
+    public int getIdPostagem() {
+        return idPostagem;
     }
 
     /**
-     * @param idAreas the idAreas to set
+     * @param idPostagem the idPostagem to set
      */
-    public void setIdAreas(int idAreas) {
-        this.idAreas = idAreas;
+    public void setIdPostagem(int idPostagem) {
+        this.idPostagem = idPostagem;
     }
     
 }

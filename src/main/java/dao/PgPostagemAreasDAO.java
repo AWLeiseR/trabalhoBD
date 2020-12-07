@@ -31,7 +31,7 @@ public class PgPostagemAreasDAO implements DAO<PostagemAreas>{
     
     
     private static final String CREATE_QUERY =
-                                "INSERT INTO revista.postagemareas(idpostagemareas,idpostagem,idareas) " +
+                                "INSERT INTO revista.postagemareas(idpostagem,idareas) " +
                                 "VALUES(?,?,?);";
      
      private static final String READ_QUERY_POSTAGEM =
@@ -46,7 +46,7 @@ public class PgPostagemAreasDAO implements DAO<PostagemAreas>{
                                 "WHERE idpostagem = ?;";
 
     private static final String ALL_QUERY =
-                                "SELECT idpostagemareas, idpostagem, idareas " +
+                                "SELECT idpostagem, idareas " +
                                 "FROM revista.postagemareas " +
                                 "ORDER BY idpostagem;";
     
@@ -54,9 +54,9 @@ public class PgPostagemAreasDAO implements DAO<PostagemAreas>{
     public void create(PostagemAreas t) throws SQLException {
        try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY)){
             
-            statement.setInt(2, t.getIdPostagem());
+            statement.setInt(1, t.getIdPostagem());
             
-            statement.setInt(3, t.getIdAreas());
+            statement.setInt(2, t.getIdAreas());
             
             statement.executeUpdate();
         }catch(SQLException ex) {
@@ -123,16 +123,16 @@ public class PgPostagemAreasDAO implements DAO<PostagemAreas>{
 
     @Override
     public List<PostagemAreas> all() throws SQLException {
-        List<AreasDeInteresse> areaList = new ArrayList<>();
+        List<PostagemAreas> postagemAreaList = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(ALL_QUERY);
             ResultSet result = statement.executeQuery()) {
             while (result.next()) {
-                AreasDeInteresse area = new AreasDeInteresse();
-                area.setAreaId(result.getInt("areasId"));
-                area.setNome(result.getString("nome"));
+                PostagemAreas area = new PostagemAreas();
+                area.setIdPostagem(result.getInt("IdPostagem"));
+                area.setIdAreas(result.getInt("idAreas"));
 
-                areaList.add(area);
+                postagemAreaList.add(area);
             }
         } catch (SQLException ex) {
             Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
@@ -140,7 +140,7 @@ public class PgPostagemAreasDAO implements DAO<PostagemAreas>{
             throw new SQLException("Erro ao listar areas de interesse.");
         }
 
-        return areaList;
+        return postagemAreaList;
     }
     
     

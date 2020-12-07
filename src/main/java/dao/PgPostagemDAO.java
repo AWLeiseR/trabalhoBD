@@ -22,7 +22,7 @@ import model.Postagem;
  *
  * @author Alan
  */
-public class PgPostagemDAO implements DAO<Postagem>  {
+public class PgPostagemDAO implements PostagemDAO<Postagem>  {
     
     private final Connection connection;
     
@@ -189,18 +189,23 @@ public class PgPostagemDAO implements DAO<Postagem>  {
         return postList;
     }
     
-    
-    public List<Postagem> maisRecentes() throws SQLException {
+    /**
+     *
+     * @return
+     * @throws SQLException
+     */
+    @Override
+    public List<Postagem> maisRecente() throws SQLException {
        List<Postagem> postList = new ArrayList<>();
 
-        try (PreparedStatement statement = connection.prepareStatement(ALL_QUERY);
+        try (PreparedStatement statement = connection.prepareStatement(READ_QUERY_MAIS_NOVAS);
              ResultSet result = statement.executeQuery()) {
             while (result.next()) {
                 Postagem post = new Postagem();
                 post.setPostagemId(result.getInt("id"));
                 System.out.println("PRINT");
                 post.setTitulo(result.getString("titulo"));
-                post.setSubtitulo("subtitulo");
+                //post.setSubtitulo(result.getString("subtitulo"));
                 postList.add(post);
             }
         } catch (SQLException ex) {

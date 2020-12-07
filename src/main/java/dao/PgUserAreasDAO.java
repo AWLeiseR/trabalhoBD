@@ -29,8 +29,8 @@ public class PgUserAreasDAO implements DAO<UserAreas> {
     }
     
     private static final String CREATE_QUERY =
-                                "INSERT INTO revista.userareas(iduserareas,iduser,idareas) " +
-                                "VALUES(?,?,?);";
+                                "INSERT INTO revista.userareas(iduser,idareas) " +
+                                "VALUES(?,?);";
      
      private static final String READ_QUERY_USER =
                                 "SELECT iduser,idareas " +
@@ -42,7 +42,7 @@ public class PgUserAreasDAO implements DAO<UserAreas> {
                                 "WHERE iduser = ?;";
 
     private static final String ALL_QUERY =
-                                "SELECT iduserareas, iduser,idareas " +
+                                "SELECT  iduser,idareas " +
                                 "FROM revista.userareas " +
                                 "ORDER BY iduser;";
 
@@ -50,9 +50,9 @@ public class PgUserAreasDAO implements DAO<UserAreas> {
     public void create(UserAreas t) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY)){
             
-            statement.setInt(2, t.getIdUser());
+            statement.setInt(1, t.getIdUser());
             
-            statement.setInt(3, t.getIdAreas());
+            statement.setInt(2, t.getIdAreas());
             
             statement.executeUpdate();
         }catch(SQLException ex) {
@@ -119,16 +119,16 @@ public class PgUserAreasDAO implements DAO<UserAreas> {
 
     @Override
     public List<UserAreas> all() throws SQLException {
-        List<AreasDeInteresse> areaList = new ArrayList<>();
+        List<UserAreas> userAreaList = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(ALL_QUERY);
             ResultSet result = statement.executeQuery()) {
             while (result.next()) {
-                AreasDeInteresse area = new AreasDeInteresse();
-                area.setAreaId(result.getInt("areasId"));
-                area.setNome(result.getString("nome"));
+                UserAreas area = new UserAreas();
+                area.setIdAreas(result.getInt("idAreas"));
+                area.setIdUser(result.getInt("idUser"));
 
-                areaList.add(area);
+                userAreaList.add(area);
             }
         } catch (SQLException ex) {
             Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
@@ -136,7 +136,7 @@ public class PgUserAreasDAO implements DAO<UserAreas> {
             throw new SQLException("Erro ao listar areas de interesse.");
         }
 
-        return areaList;
+        return userAreaList;
     }
     
 }

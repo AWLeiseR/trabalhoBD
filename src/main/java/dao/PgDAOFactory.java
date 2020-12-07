@@ -38,9 +38,13 @@ public class PgDAOFactory extends DAOFactory {
     }
 
     @Override
-    public DAO getPstagemAreasDAO() {
+    public DAO getPostagemAreasDAO() {
         return new PgPostagemAreasDAO(this.connection);
     }
+
+    @Override
+    public DAO getHighlightDAO() {
+        return new PgHighlightDAO(this.connection);    }
     
     
 }

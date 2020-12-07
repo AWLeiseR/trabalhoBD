@@ -29,8 +29,10 @@
                     <p> 
                         <span class="card-text"><c:out value="${post.conteudo}"/></span>
                     </p>
+                   
                 </div>
                      <div class="card-footer">
+                        <i class="fa fa-angle-double-up"></i>
                         <span class="card-text">Id: <c:out value="${post.postagemId}"/></span>
                         <span class="card-text">Visualizações: <c:out value="${post.visualizacoes}"/></span>
                         <span class="card-text">CreateAt: <c:out value="${post.createAt}"/></span>

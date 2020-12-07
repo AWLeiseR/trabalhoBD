@@ -21,23 +21,34 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th class="col-lg-2 h4">ID</th>
-                            <th class="col-lg-5 h4">Nome</th>
-                            <th class="col-lg-4 h4 text-center">Ação</th>
+                            <th class=" h4">ID</th>
+                            <th class="col-2  h4 ">Nome</th>
+                            <th class="col-2 h4">Função</th>
+                            <th class="col-4 h4 text-center">Ação</th>
                             <th class="col-lg-1 h4 text-center">Excluir?</th>
                         </tr>
                     </thead>
                     <tbody>
                         <c:forEach var="usuario" items="${requestScope.userList}">
+                            
                             <tr>
+                                
                                 <td>
-                                        <span class="h4"><c:out value="${usuario.userId}"/></span>
+                                    <span class="h4"><c:out value="${usuario.userId}"/></span>
                                 </td>
+                                
                                 <td>
                                     <a href="${pageContext.servletContext.contextPath}/user/read?id=${usuario.userId}">
                                         <span class="h4"><c:out value="${usuario.nome}"/></span>
                                     </a>
                                 </td>
+                                
+                                 <td>
+                                    <a href="${pageContext.servletContext.contextPath}/user/read?id=${usuario.userId}">
+                                        <span class="h4"><c:out value="${usuario.funcao}"/></span>
+                                    </a>
+                                </td>
+                                
                                 <td class="text-center">
                                     <a class="btn btn-default"
                                        href="${pageContext.servletContext.contextPath}/user/update?id=${usuario.userId}"
@@ -52,10 +63,13 @@
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </td>
+                                
                                 <td class="text-center">
                                     <input class="checkbox-inline" type="checkbox" name="delete" value="${usuario.userId}" />
                                 </td>
+                                
                             </tr>
+                            
                         </c:forEach>
                     </tbody>
                 </table>

@@ -10,12 +10,12 @@
 <html>
     <head>
         <%@include file="/view/includes/head.jsp" %>
-        <title>[BD 2020] Usuários: cadastro</title>
+        <title>Cadastro de membros</title>
     </head>
     <body>
 
         <div class="container">
-            <h2 class="text-center">Inserção de um novo usuário</h2>
+            <h2 class="text-center">Cadastro de novo membroo</h2>
 
             <form
                 class="form"
@@ -39,28 +39,20 @@
 
                     <p class="help-block"></p>
                 </div>
+                
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Senha</label>
+                        <input class="form-control password-input" type="password" name="senha" pattern=".{4,}" required title="Pelo menos 4 caracteres."/>
+                    </div>
+                     <div class="form-group col-md-6">
+                        <label >Confirmar senha</label>
+                        <input class="form-control password-confirm" type="password" name="senha-confirmacao" pattern=".{4,}" required title="Pelo menos 4 caracteres."/>
+                        <p class="help-block"></p>
+                    </div>
 
-
-                <div class="form-group">
-                    <label class="control-label">Senha</label>
-                    <input class="form-control password-input"
-                           type="password" name="senha"
-                           pattern=".{4,}" required title="Pelo menos 4 caracteres."/>
-                </div>
-
-                <div class="form-group pwd-confirm">
-                    <label class="control-label">Confirmar senha</label>
-                    <input class="form-control password-confirm"
-                           type="password" name="senha-confirmacao"
-                           pattern=".{4,}" required title="Pelo menos 4 caracteres."/>
-                    <p class="help-block"></p>
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label">Função</label>
-                    <input class="form-control" d="usuario-funcao" type="text" name="funcao" required/>
-                </div>
-
+                </div>      
+              
                 <div class="text-center">
                     <button class="btn btn-lg btn-primary" type="submit">Salvar</button>
                 </div>

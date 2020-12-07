@@ -11,27 +11,12 @@ package model;
  */
 public class PostagemAreas {
     
-    private int idPostagemAreas;
     private int idPostagem;
     private int idAreas;
     
     /**
-     * @return the idPostagemAreas
-     */
-    public int getIdPostagemAreas() {
-        return idPostagemAreas;
-    }
-
-    /**
-     * @param idPostagemAreas the idPostagemAreas to set
-     */
-    public void setIdPostagemAreas(int idPostagemAreas) {
-        this.idPostagemAreas = idPostagemAreas;
-    }
-
-    /**
      * @return the idPostagem
-     */
+    */
     public int getIdPostagem() {
         return idPostagem;
     }

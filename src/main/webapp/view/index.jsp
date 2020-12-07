@@ -14,30 +14,37 @@
         <title>Comp-magazine</title>
     </head>
     <body>
-        <h1>Bem-vindo a Comp-magazine!</h1>
-        
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+             <h1 class="display-4">Comp-magazine!</h1>
+             <p class="lead">Conteúdo de computação feito por computeiros.</p>
+            </div>
+            
+        </div>
         <div class="container">
             
            
-                
-                        <c:forEach var="post" items="${requestScope.postList}">
-                            <div class="card">
-                                <div class="card-header">
-                                    <a href="${pageContext.servletContext.contextPath}/posts/read?id=${post.postagemId}">
-                                        <span class="card-title"><c:out value="${post.titulo}"/></span>
-                                    </a>
-                                </div>
-                                <div class="card-body">  
-                                    <a href="${pageContext.servletContext.contextPath}/posts/read?id=${post.postagemId}">
-                                        <span class="h4"><c:out value="${post.subtitulo}"/></span>
-                                    </a>
-                                </div>
-                            </div>
-                        </c:forEach>
-      
+
+            <c:forEach var="post" items="${requestScope.postList}">
+                <div class="card">
+                    <div class="card-header">
+                        <a href="${pageContext.servletContext.contextPath}/posts/read?id=${post.postagemId}">
+                            <span class="card-title"><c:out value="${post.titulo}"/></span>
+                        </a>
+                    </div>
+                    <div class="card-body">  
+                        <a href="${pageContext.servletContext.contextPath}/posts/read?id=${post.postagemId}">
+                            <span class="h4"><c:out value="${post.subtitulo}"/></span>
+                        </a>
+                    </div>
+                </div>
+            </c:forEach>
+
+           <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/user">Ver usuários</a>
+            <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/posts">Ver postagens</a>
+            <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/areas">Ver áreas</a>
+            <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/loginController">Login</a>
         </div> 
-        <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/user">Ver usuários</a>
-        <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/posts">Ver postagens</a>
-        <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/areas">Ver áreas</a>
+        
     </body>
 </html>
