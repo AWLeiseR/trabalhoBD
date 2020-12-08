@@ -32,7 +32,7 @@
                    
                 </div>
                      <div class="card-footer">
-                        <i class="fa fa-angle-double-up"></i>
+                         <a ><i class="fa fa-angle-double-up"></i></a>
                         <span class="card-text">Id: <c:out value="${post.postagemId}"/></span>
                         <span class="card-text">Visualizações: <c:out value="${post.visualizacoes}"/></span>
                         <span class="card-text">CreateAt: <c:out value="${post.createAt}"/></span>

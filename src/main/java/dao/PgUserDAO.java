@@ -20,7 +20,7 @@ import model.User;
  * @author dskaster
  * 
  */
-public class PgUserDAO implements DAO<User> {
+public class PgUserDAO implements UserDAO {
 
     private final Connection connection;
 
@@ -48,14 +48,23 @@ public class PgUserDAO implements DAO<User> {
                                 "WHERE userid = ?;";
 
     private static final String ALL_QUERY =
-                                "SELECT userid, nome " +
+                                "SELECT userid, nome, funcao " +
                                 "FROM revista.users " +
                                 "ORDER BY userid;";
+    
+    private static final String GET_FUNCAO =
+                                "SELECT funcao " +
+                                "FROM revista.users " +
+                                "WHERE userId=?;";
+    
+    private static final String UPDATE_FUNCAO = 
+                                "UPDATE revista.users "+
+                                "SET funcao = ? WHERE userid = ? ;";
 
-   /* private static final String AUTHENTICATE_QUERY =
+    private static final String AUTHENTICATE_QUERY =
                                 "SELECT id, pnome, snome " +
                                 "FROM j2ee.user " +
-                                "WHERE email = ? AND senha = md5(?);";*/
+                                "WHERE email = ? AND senha = md5(?);";
 
     public PgUserDAO(Connection connection) {
         this.connection = connection;
@@ -70,7 +79,7 @@ public class PgUserDAO implements DAO<User> {
             statement.setString(3, t.getSobrenome());
             statement.setString(4, t.getEmail());
             statement.setString(5, t.getSenha());
-            statement.setString(6, t.getFuncao());
+            statement.setString(6, "membro");
 
             statement.executeUpdate();
         } catch (SQLException ex) {
@@ -194,6 +203,7 @@ public class PgUserDAO implements DAO<User> {
                 User user = new User();
                 user.setUserId(result.getInt("userId"));
                user.setNome(result.getString("nome"));
+               user.setFuncao(result.getString("funcao"));
 
                 userList.add(user);
             }
@@ -206,7 +216,7 @@ public class PgUserDAO implements DAO<User> {
         return userList;
     }
 
-/*    @Override
+    @Override
     public void authenticate(User user) throws SQLException, SecurityException {
         try (PreparedStatement statement = connection.prepareStatement(AUTHENTICATE_QUERY)) {
             statement.setString(1, user.getEmail());
@@ -226,6 +236,66 @@ public class PgUserDAO implements DAO<User> {
 
             throw new SQLException("Erro ao autenticar usuário.");
         }
-    }*/
+    }
+
+    @Override
+    public User getByLogin(String login) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getFuncao(int id) throws SQLException {
+       String funcao;
+
+        try (PreparedStatement statement = connection.prepareStatement(READ_QUERY)) {
+            statement.setInt(1, id);
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    funcao=result.getString("funcao");
+                    
+                } else {
+                    throw new SQLException("Erro ao visualizar: usuário não encontrado.");
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgUserDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+            
+            if (ex.getMessage().equals("Erro ao visualizar: usuário não encontrado.")) {
+                throw ex;
+            } else {
+                throw new SQLException("Erro ao visualizar usuário.");
+            }
+        }
+
+        return funcao; 
+    }
+
+    @Override
+    public void updateFuncao(int id, String funcao) throws SQLException {
+        String query;
+        
+                query = UPDATE_FUNCAO;
+                
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, funcao);
+            statement.setInt(2, id);
+
+            if (statement.executeUpdate() < 1) {
+                throw new SQLException("Erro ao editar: usuário não encontrado.");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgUserDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            if (ex.getMessage().equals("Erro ao editar: usuário não encontrado.")) {
+                throw ex;
+            } else if (ex.getMessage().contains("uq_user_login")) {
+                throw new SQLException("Erro ao editar usuário: login já existente.");
+            } else if (ex.getMessage().contains("not-null")) {
+                throw new SQLException("Erro ao editar usuário: pelo menos um campo está em branco.");
+            } else {
+                throw new SQLException("Erro ao editar usuário.");
+            }
+        }
+    }
 
 }

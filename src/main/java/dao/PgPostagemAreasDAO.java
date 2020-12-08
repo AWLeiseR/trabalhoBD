@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import model.PostagemAreas;
-import model.UserAreas;
+
 
 /**
  *
@@ -63,9 +63,9 @@ public class PgPostagemAreasDAO implements DAO<PostagemAreas>{
              Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
 
             if (ex.getMessage().contains("not-null")) {
-                throw new SQLException("Erro ao inserir area: pelo menos um campo está em branco.");
+                throw new SQLException("Erro ao inserir postagemArea: pelo menos um campo está em branco.");
             } else {
-                throw new SQLException("Erro ao inserir area.");
+                throw new SQLException("Erro ao inserir postagemArea.");
             }
         }
     }
@@ -82,16 +82,16 @@ public class PgPostagemAreasDAO implements DAO<PostagemAreas>{
                     postagemArea.setIdAreas(result.getInt("idareas"));
                     postagemArea.setIdPostagem(id);
                 } else {
-                    throw new SQLException("Erro ao visualizar: userArea não encontrado.");
+                    throw new SQLException("Erro ao visualizar: PostagemArea não encontrado.");
                 }
             }
         } catch (SQLException ex) {
             Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
             
-            if (ex.getMessage().equals("Erro ao visualizar: userArea não encontrado.")) {
+            if (ex.getMessage().equals("Erro ao visualizar: PostagemArea não encontrado.")) {
                 throw ex;
             } else {
-                throw new SQLException("Erro ao visualizar userArea.");
+                throw new SQLException("Erro ao visualizar PostagemArea.");
             }
         }
 
@@ -108,15 +108,15 @@ public class PgPostagemAreasDAO implements DAO<PostagemAreas>{
          try (PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
             statement.setInt(1, id);
             if (statement.executeUpdate() < 1) {
-                throw new SQLException("Erro ao excluir: area não encontrado.");
+                throw new SQLException("Erro ao excluir: PostagemArea não encontrado.");
             }
         } catch (SQLException ex) {
             Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
 
-            if (ex.getMessage().equals("Erro ao excluir: area não encontrado.")) {
+            if (ex.getMessage().equals("Erro ao excluir: PostagemArea não encontrado.")) {
                 throw ex;
             } else {
-                throw new SQLException("Erro ao excluir area.");
+                throw new SQLException("Erro ao excluir PostagemArea.");
             }
         }
     }
@@ -137,7 +137,7 @@ public class PgPostagemAreasDAO implements DAO<PostagemAreas>{
         } catch (SQLException ex) {
             Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
 
-            throw new SQLException("Erro ao listar areas de interesse.");
+            throw new SQLException("Erro ao listar PostagemAreas.");
         }
 
         return postagemAreaList;

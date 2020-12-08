@@ -8,7 +8,6 @@ package controller;
 import dao.DAO;
 import dao.DAOFactory;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -20,7 +19,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.User;
+import model.AreasDeInteresse;
 import java.util.Random;
+import model.UserAreas;
 
 /**
  *
@@ -48,6 +49,7 @@ public class userController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         DAO<User> dao;
+        DAO<AreasDeInteresse> daoAreas;
         User user;
         RequestDispatcher dispatcher;
         switch (request.getServletPath()) {
@@ -66,8 +68,20 @@ public class userController extends HttpServlet {
                 break;
             }
             case "/user/create":{
-                dispatcher = request.getRequestDispatcher("/view/user/create.jsp");
-                dispatcher.forward(request, response);
+                try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
+                    daoAreas = daoFactory.getAreaDAO();
+                    
+                    List<AreasDeInteresse> areasList = daoAreas.all();
+                    
+                    request.setAttribute("areasList", areasList);
+                    
+                    dispatcher = request.getRequestDispatcher("/view/user/create.jsp");
+                    
+                    dispatcher.forward(request, response);
+                    
+                } catch (ClassNotFoundException | SQLException ex) {
+                    Logger.getLogger(userController.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 break;
             }
             case "/user/read":{
@@ -136,9 +150,13 @@ public class userController extends HttpServlet {
             try {
                 daoFactory = DAOFactory.getInstance();
                 DAO<User> dao=daoFactory.getUserDAO();
+                DAO<UserAreas> daoAreas = daoFactory.getUserAreasDAO();
                 User user=new User();
+                UserAreas userAreas = new UserAreas();
                 RequestDispatcher dispatcher;
+                
                 String servletPath = request.getServletPath();
+                
                 String nome= request.getParameter("nome");
                 if(!"".equals(nome)){
                     user.setNome(nome);
@@ -160,6 +178,11 @@ public class userController extends HttpServlet {
                 if(!"".equals(funcao)){
                     user.setFuncao(funcao);
                 }
+                int area= Integer.valueOf(request.getParameter("areas"));
+                if(!"".equals(area)){
+                    userAreas.setIdAreas(area);
+                    
+                }
 
                 switch (request.getServletPath()) {
 
@@ -169,8 +192,12 @@ public class userController extends HttpServlet {
                             Random generate= new Random();
                             int id=generate.nextInt(1000);
                             user.setUserId(id);
-
+                            userAreas.setIdUser(id);
+                            
                             dao.create(user);
+                            
+                            daoAreas.create(userAreas);
+                            
 
                         } catch (SQLException ex) {
                             Logger.getLogger(userController.class.getName()).log(Level.SEVERE, null, ex);

@@ -22,7 +22,7 @@ import model.Postagem;
  *
  * @author Alan
  */
-public class PgPostagemDAO implements PostagemDAO<Postagem>  {
+public class PgPostagemDAO implements PostagemDAO  {
     
     private final Connection connection;
     
@@ -53,10 +53,30 @@ public class PgPostagemDAO implements PostagemDAO<Postagem>  {
                                 "FROM revista.postagem " +
                                 "ORDER BY postagemid;";
     
-    private static final String READ_QUERY_MAIS_NOVAS=
-                                 "select postagemid,titulo,subtitulo,descricao" +
-                                 "from revista.postagem " +
-                                 "order by createAt DESC limit 3";
+    private static final String POSTAGENS_RECENTES=
+                                 "SELECT titulo, subtitulo, descricao  " +
+                                 "FROM revista.postagem " +
+                                 "ORDER BY createAt DESC LIMIT 3;";
+    
+    private static final String GET_NUMERO_VIUS=
+                                "SELECT visualizacoes " +
+                                "FROM revista.postagem "+
+                                "WHERE postagemid=?;";
+    
+    private static final String UPDATE_NUMERO_VISUALIZACOES =
+                                "UPDATE revista.postagem " +
+                                "SET visualizacoes=?" +
+                                "WHERE postagemid = ?;";
+    
+    private static final String POSTAGENS_MAIS_VISTAS=
+                                "SELECT postagemid, titulo, subtitulo, descricao " +
+                                "FROM revista.postagem "+
+                                "ORDER BY visualizacoes DESC LIMIT 3;";
+    
+    private static final String POSTAGENS_AREA_DO_USER = 
+                                "SELECT postagemid, titulo, subtitulo, descricao " +
+                                "from revista.postagem, revista.postagemareas, revista.users,revista.userareas " +
+                                "where users.userid = ? AND postagemid = idpostagem AND userid = iduser AND userareas.idareas = postagemareas.idareas  ; ";
 
     @Override
     public void create(Postagem t) throws SQLException {
@@ -85,7 +105,7 @@ public class PgPostagemDAO implements PostagemDAO<Postagem>  {
 
     @Override
     public Postagem read(Integer id) throws SQLException {
-         Postagem post = new Postagem();
+        Postagem post = new Postagem();
 
         try (PreparedStatement statement = connection.prepareStatement(READ_QUERY)) {
             statement.setInt(1, id);
@@ -198,23 +218,107 @@ public class PgPostagemDAO implements PostagemDAO<Postagem>  {
     public List<Postagem> maisRecente() throws SQLException {
        List<Postagem> postList = new ArrayList<>();
 
-        try (PreparedStatement statement = connection.prepareStatement(READ_QUERY_MAIS_NOVAS);
+        try (PreparedStatement statement = connection.prepareStatement(POSTAGENS_RECENTES);
              ResultSet result = statement.executeQuery()) {
             while (result.next()) {
                 Postagem post = new Postagem();
-                post.setPostagemId(result.getInt("id"));
-                System.out.println("PRINT");
                 post.setTitulo(result.getString("titulo"));
-                //post.setSubtitulo(result.getString("subtitulo"));
+                post.setSubtitulo("subtitulo");
+                post.setDescricao("descricao");               
                 postList.add(post);
             }
         } catch (SQLException ex) {
             Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
 
-            throw new SQLException("Erro ao listar usuários.");
+            throw new SQLException("Erro ao listar Postagens.");
         }
 
         return postList;
+    }
+
+    @Override
+    public int numeroVisualizacoes(int id) throws SQLException {
+         int visualizacoes ;
+
+        try (PreparedStatement statement = connection.prepareStatement(GET_NUMERO_VIUS)) {
+            statement.setInt(1, id);
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                   
+                   visualizacoes = result.getInt("visualizacoes");
+                   
+                    
+                } else {
+                    throw new SQLException("Erro ao visualizar: postagem não encontrado.");
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+            
+            if (ex.getMessage().equals("Erro ao visualizar: postagem não encontrado.")) {
+                throw ex;
+            } else {
+                throw new SQLException("Erro ao visualizar postagem.");
+            }
+        }
+
+        return visualizacoes;
+    }
+
+    @Override
+    public void setNumeroVizualizacoes(int id, int num) throws SQLException {
+        String query;
+            
+                query = UPDATE_NUMERO_VISUALIZACOES;
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            
+            
+            statement.setInt(1,num);
+            statement.setInt(2,id);
+            
+            if (statement.executeUpdate() < 1) {
+                throw new SQLException("Erro ao editar: postagem não encontrado.");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            if (ex.getMessage().equals("Erro ao editar: postagem não encontrado.")) {
+                throw ex;
+            } else if (ex.getMessage().contains("not-null")) {
+                throw new SQLException("Erro ao editar a postagem: pelo menos um campo está em branco.");
+            } else {
+                throw new SQLException("Erro ao editar postagem.");
+            }
+        }
+    }
+
+    @Override
+    public List<Postagem> maisVisto() throws SQLException {
+         List<Postagem> postList = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(POSTAGENS_MAIS_VISTAS);
+             ResultSet result = statement.executeQuery()) {
+            while (result.next()) {
+                Postagem post = new Postagem();
+                post.setPostagemId(result.getInt("postagemid"));
+                post.setTitulo(result.getString("titulo"));
+                post.setSubtitulo(result.getString("subtitulo"));
+                post.setDescricao(result.getString("descricao"));               
+                postList.add(post);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            throw new SQLException("Erro ao listar Postagens mais vistas.");
+        }
+
+        return postList;
+    }
+
+    @Override
+    public List<Postagem> postagemAreaUser(int i) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

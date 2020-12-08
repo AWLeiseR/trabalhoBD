@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import jdbc.ConnectionFactory;
+import model.AreasDeInteresse;
 
 /**
  *
@@ -113,6 +114,10 @@ public abstract class DAOFactory implements AutoCloseable {
     @Override
     public void close() throws SQLException {
         closeConnection();
+    }
+
+    public DAO<AreasDeInteresse> getAreasDAO() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

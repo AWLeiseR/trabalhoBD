@@ -7,6 +7,7 @@ package controller;
 
 import dao.DAO;
 import dao.DAOFactory;
+import dao.PostagemDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -21,6 +22,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import model.Postagem;
 
 
@@ -53,8 +55,10 @@ public class postagemController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
             DAO<Postagem> dao;
+            PostagemDAO daoPost;
             Postagem post;
             RequestDispatcher dispatcher;
+            int visualizacoes;
            
             switch (request.getServletPath()) {
                 case "/posts": {
@@ -96,7 +100,15 @@ public class postagemController extends HttpServlet {
                 case "/posts/read":{
                 try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
                     dao = daoFactory.getPostagemDAO();
-
+                    
+                    daoPost = (PostagemDAO) daoFactory.getPostagemDAO();
+                    
+                    visualizacoes = daoPost.numeroVisualizacoes(Integer.valueOf(request.getParameter("id")));
+                    
+                    visualizacoes++;
+                    
+                    daoPost.setNumeroVizualizacoes(Integer.valueOf(request.getParameter("id")), visualizacoes);
+                    
                     post = dao.read(Integer.valueOf(request.getParameter("id")));
                     request.setAttribute("post", post);
 
@@ -124,6 +136,7 @@ public class postagemController extends HttpServlet {
                     break;
                 
             }
+                
 
     }
     }
@@ -148,6 +161,7 @@ public class postagemController extends HttpServlet {
                 String servletPath = request.getServletPath();
                 String titulo= request.getParameter("titulo");
                 if(!"".equals(titulo)){
+                    System.out.println(titulo);
                     post.setTitulo(titulo);
                 }
                 String subtitulo= request.getParameter("subtitulo");
@@ -174,12 +188,19 @@ public class postagemController extends HttpServlet {
 
                         try {
                             Random generate= new Random();
+                            
                             int id=generate.nextInt(1000);
+                            
                             post.setPostagemId(id);
+                            
                             long millis=System.currentTimeMillis();  
-                            java.sql.Date data=new java.sql.Date(millis);  
+                            
+                            java.sql.Date data = new java.sql.Date(millis);  
+                            
                             post.setCreateAt(data);
+                            
                             post.setAlteradoAt(data);
+                            
                             dao.create(post);
 
                         } catch (SQLException ex) {

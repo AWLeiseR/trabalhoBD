@@ -59,9 +59,9 @@ public class PgUserAreasDAO implements DAO<UserAreas> {
              Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
 
             if (ex.getMessage().contains("not-null")) {
-                throw new SQLException("Erro ao inserir area: pelo menos um campo está em branco.");
+                throw new SQLException("Erro ao inserir UserArea: pelo menos um campo está em branco.");
             } else {
-                throw new SQLException("Erro ao inserir area.");
+                throw new SQLException("Erro ao inserir UserArea.");
             }
         }
     }
@@ -109,10 +109,10 @@ public class PgUserAreasDAO implements DAO<UserAreas> {
         } catch (SQLException ex) {
             Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
 
-            if (ex.getMessage().equals("Erro ao excluir: area não encontrado.")) {
+            if (ex.getMessage().equals("Erro ao excluir: area do user não encontrado.")) {
                 throw ex;
             } else {
-                throw new SQLException("Erro ao excluir area.");
+                throw new SQLException("Erro ao excluir area do user.");
             }
         }
     }
@@ -133,7 +133,7 @@ public class PgUserAreasDAO implements DAO<UserAreas> {
         } catch (SQLException ex) {
             Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
 
-            throw new SQLException("Erro ao listar areas de interesse.");
+            throw new SQLException("Erro ao listar areas e users.");
         }
 
         return userAreaList;

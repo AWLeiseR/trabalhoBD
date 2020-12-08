@@ -21,7 +21,7 @@
                 class="form"
                 action="${pageContext.servletContext.contextPath}/posts/create"
                 <%--enctype="multipart/form-data"--%>
-                method="POST">
+                method="POST" accept-charset="utf-8">
                 
                 <div class="form-group">
                     <label for="postagem-titulo" class="control-label">Título</label>

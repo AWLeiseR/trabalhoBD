@@ -29,7 +29,7 @@
                 <div class="card">
                     <div class="card-header">
                         <a href="${pageContext.servletContext.contextPath}/posts/read?id=${post.postagemId}">
-                            <span class="card-title"><c:out value="${post.titulo}"/></span>
+                            <span class="card-title h3"><c:out value="${post.titulo}"/></span>
                         </a>
                     </div>
                     <div class="card-body">  
@@ -37,13 +37,19 @@
                             <span class="h4"><c:out value="${post.subtitulo}"/></span>
                         </a>
                     </div>
+                        <div class="card-body">  
+                        <a href="${pageContext.servletContext.contextPath}/posts/read?id=${post.postagemId}">
+                            <span class="h4"><c:out value="${post.descricao}"/></span>
+                        </a>
+                    </div>
                 </div>
+                        <br/>
             </c:forEach>
 
            <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/user">Ver usuários</a>
             <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/posts">Ver postagens</a>
             <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/areas">Ver áreas</a>
-            <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/loginController">Login</a>
+            <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/login">Login</a>
         </div> 
         
     </body>

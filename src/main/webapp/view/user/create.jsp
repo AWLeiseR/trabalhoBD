@@ -51,8 +51,17 @@
                         <p class="help-block"></p>
                     </div>
 
-                </div>      
-              
+                </div>  
+                <div>
+                    <label >Escolha uma Área de interesse</label>
+                    <select name="areas">
+                        <c:forEach var="area" items="${requestScope.areasList}">
+
+                            <option value="${area.areaId}"><c:out value="${area.nome}"/></option>
+
+                        </c:forEach>
+                    </select>
+                </div>
                 <div class="text-center">
                     <button class="btn btn-lg btn-primary" type="submit">Salvar</button>
                 </div>

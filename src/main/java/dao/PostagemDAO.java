@@ -14,19 +14,11 @@ import model.Postagem;
  * @author Alan
  * @param <Postagem>
  */
-public interface PostagemDAO<Postagem> extends DAO<Postagem> {
-    @Override
-    public void create(Postagem t) throws SQLException;
-    @Override
-    public Postagem read(Integer id) throws SQLException;
-    @Override
-    public void update(Postagem t) throws SQLException;
-    @Override
-    public void delete(Integer id) throws SQLException;
-
-    @Override
-    public List<Postagem> all() throws SQLException;   
+public interface PostagemDAO extends DAO<Postagem> {
     
     public List<Postagem> maisRecente() throws SQLException;
-
+    public List<Postagem> maisVisto() throws SQLException;
+    public int numeroVisualizacoes(int id) throws SQLException;
+    public void setNumeroVizualizacoes(int id, int num) throws SQLException;
+    public List<Postagem> postagemAreaUser(int id) throws SQLException;
 }

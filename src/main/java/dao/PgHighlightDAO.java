@@ -6,9 +6,15 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Highlight;
+import model.Postagem;
 
 /**
  *
@@ -23,46 +29,57 @@ public class PgHighlightDAO implements DAO<Highlight> {
     }
 
     private static final String CREATE_QUERY =
-                                "INSERT INTO revista.users(userid, nome, sobrenome, email, senha, funcao) " +
-                                "VALUES(?,?,?,?, md5(?),?);";
+                                "INSERT INTO revista.highlight (idUser,idPostagem) " +
+                                "VALUES(?,?);";
 
     private static final String READ_QUERY =
-                                "SELECT nome, sobrenome, email,funcao " +
-                                "FROM revista.users " +
-                                "WHERE userId = ?;";
-
-    private static final String UPDATE_QUERY =
-                                "UPDATE revista.users " +
-                                "SET nome= ?,  sobrenome= ?, email= ?, funcao=?  " +
-                                "WHERE userid = ?;";
-
-    private static final String UPDATE_WITH_PASSWORD_QUERY =
-                                "UPDATE revista.users " +
-                                "SET nome= ?, sobrenome= ?, email= ?, funcao=? , senha = md5(?) " +
-                                "WHERE userid = ?;";
+                                "SELECT idPostagem " +
+                                "FROM revista.highlight " +
+                                "WHERE idUser = ?;";
 
     private static final String DELETE_QUERY =
-                                "DELETE FROM revista.users " +
-                                "WHERE userid = ?;";
+                                "DELETE FROM revista.highlight " +
+                                "WHERE idUser = ?;";
 
     private static final String ALL_QUERY =
-                                "SELECT userid, nome " +
-                                "FROM revista.users " +
-                                "ORDER BY userid;";
-
-   /* private static final String AUTHENTICATE_QUERY =
-                                "SELECT id, pnome, snome " +
-                                "FROM j2ee.user " +
-                                "WHERE email = ? AND senha = md5(?);";*/
+                                "SELECT idPostagem, idUser " +
+                                "FROM revista.highlight " +
+                                "ORDER BY idPostagem;";
 
     @Override
     public void create(Highlight t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY)) {
+            
+           
+            statement.setInt(1, t.getIdUser());
+            statement.setInt(2, t.getIdPostagem());
+            
+
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(PgUserDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+        }
     }
 
     @Override
     public Highlight read(Integer id) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Highlight high = new Highlight();
+        try(PreparedStatement statement = connection.prepareStatement(READ_QUERY)){
+             statement.setInt(1, id);
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    high.setIdUser(result.getInt("idUser"));
+                    high.setIdPostagem(result.getInt("idPostagem"));
+                    
+                } else {
+                    throw new SQLException("Erro ao visualizar: postagem não encontrado.");
+                }
+            }
+        }catch (SQLException ex){
+            Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+        }
+        return high;
     }
 
     @Override
@@ -72,12 +89,42 @@ public class PgHighlightDAO implements DAO<Highlight> {
 
     @Override
     public void delete(Integer id) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try (PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
+            statement.setInt(1, id);
+
+            if (statement.executeUpdate() < 1) {
+                throw new SQLException("Erro ao excluir: highlight não encontrado.");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            if (ex.getMessage().equals("Erro ao excluir: highlight não encontrado.")) {
+                throw ex;
+            } else {
+                throw new SQLException("Erro ao excluir highlight.");
+            }
+        }
     }
 
     @Override
     public List<Highlight> all() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Highlight> highList = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(ALL_QUERY);
+             ResultSet result = statement.executeQuery()) {
+            while (result.next()) {
+                Highlight high = new Highlight();
+                high.setIdUser(result.getInt("idUser"));
+                high.setIdPostagem(result.getInt("idPostagem"));
+               highList.add(high);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            throw new SQLException("Erro ao listar high.");
+        }
+
+        return highList;
     }
 
 }
