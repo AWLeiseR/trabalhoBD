@@ -20,5 +20,5 @@ public interface PostagemDAO extends DAO<Postagem> {
     public List<Postagem> maisVisto() throws SQLException;
     public int numeroVisualizacoes(int id) throws SQLException;
     public void setNumeroVizualizacoes(int id, int num) throws SQLException;
-    public List<Postagem> postagemAreaUser(int id) throws SQLException;
+    public List<Postagem> postagemAreaUser(int id,int area, int buscarPor) throws SQLException;
 }

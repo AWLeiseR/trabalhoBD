@@ -74,9 +74,10 @@ public class PgPostagemDAO implements PostagemDAO  {
                                 "ORDER BY visualizacoes DESC LIMIT 3;";
     
     private static final String POSTAGENS_AREA_DO_USER = 
-                                "SELECT postagemid, titulo, subtitulo, descricao " +
-                                "from revista.postagem, revista.postagemareas, revista.users,revista.userareas " +
-                                "where users.userid = ? AND postagemid = idpostagem AND userid = iduser AND userareas.idareas = postagemareas.idareas  ; ";
+                                "select postagemid,titulo,subtitulo,descricao " +
+                                "from revista.userareas, revista.postagemareas, revista.postagem " + 
+                                "where iduser = ? and postagemareas.idareas = ? AND postagem.postagemid = postagemareas.idpostagem "+
+                                "order by ? Limit 3;";
 
     @Override
     public void create(Postagem t) throws SQLException {
@@ -317,8 +318,50 @@ public class PgPostagemDAO implements PostagemDAO  {
     }
 
     @Override
-    public List<Postagem> postagemAreaUser(int i) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Postagem> postagemAreaUser(int id,int area, int buscarPor) throws SQLException {
+        String order = null;
+       
+        List<Postagem> postList = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(POSTAGENS_AREA_DO_USER)) {
+            
+            statement.setInt(1, id);
+            statement.setInt(2, area);
+            switch(buscarPor){
+                case 1:
+                    order = "createat";
+                    break;
+                case 2:
+                    order = "visualizacoes";
+                    break;
+            }
+            statement.setString(3, order);
+            
+            
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    Postagem post = new Postagem();
+                    post.setPostagemId(result.getInt("postagemid"));
+                    post.setTitulo(result.getString("titulo"));
+                    post.setSubtitulo(result.getString("subtitulo"));
+                    post.setDescricao(result.getString("descricao"));               
+                    postList.add(post);
+                }
+            }
+                 
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            if (ex.getMessage().equals("Erro ao editar: postagem não encontrado.")) {
+                throw ex;
+            } else if (ex.getMessage().contains("not-null")) {
+                throw new SQLException("Erro ao editar a postagem: pelo menos um campo está em branco.");
+            } else {
+                throw new SQLException("Erro ao editar postagem.");
+            }
+        }
+        
+        return postList;
     }
     
 }

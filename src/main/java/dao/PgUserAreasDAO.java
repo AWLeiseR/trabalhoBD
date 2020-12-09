@@ -35,7 +35,7 @@ public class PgUserAreasDAO implements DAO<UserAreas> {
      private static final String READ_QUERY_USER =
                                 "SELECT iduser,idareas " +
                                 "FROM revista.userareas " +
-                                "WHERE iduser = ?;";
+                                "WHERE iduser = ? LIMIT 1;";
 
     private static final String DELETE_QUERY =
                                 "DELETE FROM revista.userareas " +

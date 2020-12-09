@@ -5,8 +5,10 @@
  */
 package controller;
 
+import dao.AreasDAO;
 import dao.DAO;
 import dao.DAOFactory;
+import dao.PostagemDAO;
 import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,6 +26,7 @@ import javax.servlet.http.HttpSession;
 import model.AreasDeInteresse;
 import model.Postagem;
 import model.User;
+import model.UserAreas;
 
 /**
  *
@@ -33,6 +36,8 @@ import model.User;
         name = "loginController",
         urlPatterns = {
             "",
+            "/busca",
+            "/area",
             "/login",
             "/logout"
         })
@@ -53,25 +58,56 @@ public class loginController extends HttpServlet {
             throws ServletException, IOException {
             HttpSession session;
             RequestDispatcher dispatcher = null;
-            DAO<AreasDeInteresse> daoAreas;
-            DAO<Postagem> daoPostagem;
+            AreasDAO daoAreas;
+            PostagemDAO daoPostagem;
+            DAO<UserAreas> daoUserAreas = null;
+            User user;
+            AreasDeInteresse area;
+            
+            int areaDeBusca = 1;
+            int ordenarPor = 1;
 
             switch (request.getServletPath()) {
                 case "": {
                     session = request.getSession(false);
-
+                    
                     if (session != null && session.getAttribute("usuario") != null) {
+                        
                         try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
-                            daoAreas = daoFactory.getAreaDAO();
-                            daoPostagem = daoFactory.getPostagemDAO();
-                            List<Postagem> postList = daoPostagem.all();
-                            List<AreasDeInteresse> areasList = daoAreas.all();
-
+                           user = (User) session.getAttribute("usuario");
+                            
+                            daoAreas = (AreasDAO) daoFactory.getAreaDAO();
+                            daoPostagem = (PostagemDAO) daoFactory.getPostagemDAO();
+                            daoUserAreas = (DAO<UserAreas>)  daoFactory.getUserAreasDAO();
+                            
+                            if(session.getAttribute("areaDeBusca") == null){
+                                
+                                
+                                UserAreas userAreas = daoUserAreas.read(user.getUserId());
+                                
+                                areaDeBusca=userAreas.getIdAreas();
+                                
+                                request.setAttribute("areaDeBusca", areaDeBusca);
+                            
+                            }
+                            
+                            if(session.getAttribute("ordenarPor") == null){
+                                
+                                request.setAttribute("ordenarPor", ordenarPor);
+                            
+                            }
+                            
+                            List<Postagem> postList = daoPostagem.postagemAreaUser(user.getUserId(), areaDeBusca, ordenarPor);
+                            List<AreasDeInteresse> areasList = daoAreas.areasDoUser(user.getUserId());
+                            
+                            
+                            
+                            request.setAttribute("postList", postList);
                             request.setAttribute("areasList", areasList);
+                            
                             dispatcher = request.getRequestDispatcher("/view/homePage.jsp");
-                        }   catch (ClassNotFoundException ex) {
-                            Logger.getLogger(loginController.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (SQLException ex) {
+                            
+                        }   catch (ClassNotFoundException | SQLException ex) {
                             Logger.getLogger(loginController.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }else{
@@ -98,6 +134,25 @@ public class loginController extends HttpServlet {
 
                     response.sendRedirect(request.getContextPath() + "/");
                 }
+                case "/busca":{
+                    ordenarPor = Integer.parseInt(request.getParameter("ordenarPor"));
+                    
+                    request.setAttribute("ordenarPor", ordenarPor);
+                   
+                     response.sendRedirect( "/");
+                    
+                    break;
+                }
+                case "/area":{
+                    
+                    areaDeBusca = Integer.parseInt(request.getParameter("area"));
+                    
+                    request.setAttribute("areaDeBusca", areaDeBusca);     
+                    
+                     response.sendRedirect("/");
+                     
+                    break;
+                }
             }
     }
 
@@ -115,11 +170,14 @@ public class loginController extends HttpServlet {
         UserDAO dao;
         User user = new User();
         HttpSession session = request.getSession();
+        
+        int ordenarPor=1;
 
         switch (request.getServletPath()) {
             case "/login":
-                user.setEmail(request.getParameter("email"));
-                user.setSenha(request.getParameter("senha"));
+               
+                user.setEmail(request.getParameter("inputEmail"));
+                user.setSenha(request.getParameter("inputSenha"));
 
                 try (DAOFactory daoFactory = DAOFactory.getInstance()) {
                     dao = (UserDAO) daoFactory.getUserDAO();
@@ -127,11 +185,13 @@ public class loginController extends HttpServlet {
                     dao.authenticate(user);
 
                     session.setAttribute("usuario", user);
+                    session.setAttribute("ordenarPor", ordenarPor);
+                    
                 } catch (ClassNotFoundException | IOException | SQLException | SecurityException ex) {
                     session.setAttribute("error", ex.getMessage());
                 }
 
-                response.sendRedirect(request.getContextPath() + "/");
+                response.sendRedirect(request.getContextPath() + "");
 
 
 

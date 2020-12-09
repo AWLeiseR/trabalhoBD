@@ -40,7 +40,7 @@
                      </div>
             </div>
                          
-            <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/posts">
+            <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}">
                 <span>Voltar a pagina principal</span>
             </a>
         </div>

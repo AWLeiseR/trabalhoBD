@@ -62,8 +62,8 @@ public class PgUserDAO implements UserDAO {
                                 "SET funcao = ? WHERE userid = ? ;";
 
     private static final String AUTHENTICATE_QUERY =
-                                "SELECT id, pnome, snome " +
-                                "FROM j2ee.user " +
+                                "SELECT userid, nome " +
+                                "FROM revista.users " +
                                 "WHERE email = ? AND senha = md5(?);";
 
     public PgUserDAO(Connection connection) {
@@ -224,9 +224,9 @@ public class PgUserDAO implements UserDAO {
 
             try (ResultSet result = statement.executeQuery()) {
                 if (result.next()) {
-                    user.setUserId(result.getInt("id"));
-                    user.setSobrenome(result.getString("nome"));
-                    user.setNome(result.getString("nascimento"));
+                    user.setUserId(result.getInt("userid"));
+                    user.setNome(result.getString("nome"));
+                    
                 } else {
                     throw new SecurityException("Login ou senha incorretos.");
                 }

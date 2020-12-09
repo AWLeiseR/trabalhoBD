@@ -20,9 +20,10 @@ import model.AreasDeInteresse;
  *
  * @author Alan
  */
-public class PgAreaDAO implements DAO<AreasDeInteresse>  {
+public class PgAreaDAO implements AreasDAO  {
 
     private final Connection connection;
+ 
     
     public PgAreaDAO(Connection connection) {
         this.connection = connection;
@@ -50,6 +51,11 @@ public class PgAreaDAO implements DAO<AreasDeInteresse>  {
                                 "SELECT areasid, nome " +
                                 "FROM revista.areas " +
                                 "ORDER BY areasid;";
+    
+    private static final String AREAS_DO_USER=
+                                "select nome, areasid "+
+                                "from revista.areas, revista.userareas "+
+                                "where iduser = ? and idareas = areasid;";
     
     @Override
     public void create(AreasDeInteresse t) throws SQLException {
@@ -160,6 +166,29 @@ public class PgAreaDAO implements DAO<AreasDeInteresse>  {
             Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
 
             throw new SQLException("Erro ao listar areas de interesse.");
+        }
+
+        return areaList;
+    }
+
+    @Override
+    public List<AreasDeInteresse> areasDoUser(int id) throws SQLException {
+         List<AreasDeInteresse> areaList = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(AREAS_DO_USER)){
+            statement.setInt(1, id);
+            ResultSet result = statement.executeQuery(); 
+            while (result.next()) {
+                AreasDeInteresse area = new AreasDeInteresse();
+                area.setAreaId(result.getInt("areasId"));
+                area.setNome(result.getString("nome"));
+
+                areaList.add(area);
+            }
+        }catch (SQLException ex) {
+            Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            throw new SQLException("Erro ao listar areas de interesse do User.");
         }
 
         return areaList;

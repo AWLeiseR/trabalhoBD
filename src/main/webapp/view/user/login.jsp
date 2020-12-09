@@ -25,15 +25,15 @@
         
         <div class="container">
             <div class="row justify-content-center">
-                <form class="col-5">
+                <form class="col-5" action="${pageContext.servletContext.contextPath}/login" method="POST">
                     <div class="form-group">
                         <label for="inputEmail">Email</label>
-                        <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp">
+                        <input type="email" class="form-control" name="inputEmail" id="inputEmail" aria-describedby="emailHelp">
                         
                     </div>
                     <div class="form-group">
                         <label for="inputSenha">Senha</label>
-                        <input type="password" class="form-control" id="inputSenha">
+                        <input type="password" class="form-control" name="inputSenha" id="inputSenha">
                     </div>
                    <div class="d-flex justify-content-md-center">
                         <button type="submit" class="btn btn-primary btn-lg">Entrar</button>
