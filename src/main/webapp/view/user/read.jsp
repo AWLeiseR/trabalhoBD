@@ -14,42 +14,49 @@
         <title>View profile</title>
     </head>
     <body>
+        
         <div class="container">
-            <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th class="col-lg-2">ID</th>
-                            <th class="col-lg-5 ">Nome</th>
-                            <th class="col-lg-4 ">Sobrenome</th>
-                            <th class="col-lg-1 ">Email</th>
-                            <th class="col-lg-1 ">Função</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    
-                        <tr>
-                            <td>
-                                <span class="h4"><c:out value="${user.userId}"/></span>
-                            </td>
-                            <td>
-                                <span class="h4"><c:out value="${user.nome}"/></span>
-                            </td>
-                            <td>
-                                <span class="h4"><c:out value="${user.sobrenome}"/></span>
-                            </td>
-                            <td>
-                                <span class="h4"><c:out value="${user.email}"/></span>
-                            </td>
-                            <td>
-                                <span class="h4"><c:out value="${user.funcao}"/></span>
-                            </td>
-                        </tr>
-                   
-                    </tbody>
-            </table>
+            <div class="card">
+                <div class="card-header">
+                    <span class="h4">Id: <c:out value="${user.userId}"/></span>
+                </div>
+                 <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                              
+                         <span class="h4">Nome: <c:out value="${user.nome}"/></span>
+
+                        </div>
+                        <div class="col">
+                              
+                          <span class="h4">Sobrenome: <c:out value="${user.sobrenome}"/></span>
+
+                        </div>
+
+                      </div>
+                        <div class="row">
+                            <div class="col">
+                              
+                              <span class="h4">Email: <c:out value="${user.email}"/></span>
+                            </div>
+                            <div class="col">
+                              
+                              <span class="h4">Função: <c:out value="${user.funcao}"/></span> 
+                            </div>
+
+                        </div>
+                </div>
+            </div>
+              
             <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/user">
                 <span>Voltar a pagina principal</span>
             </a>
         </div>
+        
+        
+                                
+                       
+            
+       
     </body>
 </html>

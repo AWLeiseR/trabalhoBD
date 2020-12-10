@@ -32,7 +32,34 @@
                    
                 </div>
                      <div class="card-footer">
-                         <a ><i class="fa fa-angle-double-up"></i></a>
+                         <c:choose>
+                            <c:when test="${aux == 1}">
+                                <a href="${pageContext.servletContext.contextPath}/posts/tirarHighlight?id=${usuario.userId}&idPostagem=${post.postagemId}" >
+                                    <div class="btn btn-outline-primary">
+                                        <i class="fa fa-angle-double-up"></i>
+                                        <p>Tirar o Highlight</p>
+                                    </div>
+                                </a>
+                            </c:when>
+                            <c:when test="${aux != 1}">
+                                <a href="${pageContext.servletContext.contextPath}/posts/highlight?id=${usuario.userId}&idPostagem=${post.postagemId}" >
+                                    <div class="btn btn-outline-primary">
+                                        <i class="fa fa-angle-double-up"></i>
+                                        <p>Dar um Highlight</p>
+                                    </div>
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="${pageContext.servletContext.contextPath}/posts/login?id=${post.postagemId}" >
+                                    <div class="btn btn-outline-primary">
+                                        <i class="fa fa-angle-double-up"></i>
+                                        <p>Dar um Highlight</p>
+                                    </div>
+                                </a>
+                            </c:otherwise>     
+                         </c:choose>
+                        
+                         
                         <span class="card-text">Id: <c:out value="${post.postagemId}"/></span>
                         <span class="card-text">Visualizações: <c:out value="${post.visualizacoes}"/></span>
                         <span class="card-text">CreateAt: <c:out value="${post.createAt}"/></span>

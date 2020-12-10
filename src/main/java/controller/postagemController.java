@@ -7,6 +7,7 @@ package controller;
 
 import dao.DAO;
 import dao.DAOFactory;
+import dao.HighlightDAO;
 import dao.PostagemDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,8 +23,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import model.Highlight;
 
 import model.Postagem;
+import model.User;
 
 
 /**
@@ -37,7 +41,10 @@ import model.Postagem;
             "/posts/create",
             "/posts/update",
             "/posts/read",
-            "/posts/delete"})
+            "/posts/delete",
+            "/posts/login",
+            "/posts/tirarHighlight",
+            "/posts/highlight"})
 public class postagemController extends HttpServlet {
 
    
@@ -57,8 +64,12 @@ public class postagemController extends HttpServlet {
             DAO<Postagem> dao;
             PostagemDAO daoPost;
             Postagem post;
+            User user = null;
+            HighlightDAO daoHigh;
             RequestDispatcher dispatcher;
             int visualizacoes;
+            HttpSession session = null;
+            Integer aux;
            
             switch (request.getServletPath()) {
                 case "/posts": {
@@ -103,6 +114,14 @@ public class postagemController extends HttpServlet {
                     
                     daoPost = (PostagemDAO) daoFactory.getPostagemDAO();
                     
+                    if (session != null && session.getAttribute("usuario") != null) {
+                        user = (User) session.getAttribute("usuario");
+                        daoHigh = (HighlightDAO) daoFactory.getHighlightDAO();
+                        aux = daoHigh.checkHighlight(user.getUserId(), Integer.valueOf(request.getParameter("id")));
+                        session.setAttribute("usuario",user);
+                        request.setAttribute("aux",aux);
+                    }
+                    
                     visualizacoes = daoPost.numeroVisualizacoes(Integer.valueOf(request.getParameter("id")));
                     
                     visualizacoes++;
@@ -110,6 +129,7 @@ public class postagemController extends HttpServlet {
                     daoPost.setNumeroVizualizacoes(Integer.valueOf(request.getParameter("id")), visualizacoes);
                     
                     post = dao.read(Integer.valueOf(request.getParameter("id")));
+                    
                     request.setAttribute("post", post);
 
                     dispatcher = request.getRequestDispatcher("/view/posts/read.jsp");
@@ -135,6 +155,50 @@ public class postagemController extends HttpServlet {
                     }
                     break;
                 
+            }
+            
+            case "/posts/login":{
+                dispatcher = request.getRequestDispatcher("/view/user/login.jsp");
+                request.setAttribute("idPostagem",Integer.valueOf(request.getParameter("id")));
+                dispatcher.forward(request, response);
+                break;
+            }
+            case "/posts/highlight":{
+                
+                try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
+                   
+                        daoHigh =  (HighlightDAO) daoFactory.getHighlightDAO();
+                        Highlight high = new Highlight();
+                        high.setIdPostagem(Integer.valueOf(request.getParameter("idPostagem")));
+                        high.setIdUser(Integer.valueOf(request.getParameter("id")));
+                        daoHigh.create(high);
+                        System.out.println("entrou");
+                        dispatcher = request.getRequestDispatcher("/view/posts/read.jsp");
+                        dispatcher.forward(request, response);
+                        
+                    
+                } catch (ClassNotFoundException | SQLException ex) {
+                    Logger.getLogger(postagemController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+               break;
+            }
+            case "/posts/tirarHighlight":{
+                try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
+                     
+                        
+                        daoHigh =  (HighlightDAO) daoFactory.getHighlightDAO();
+                        
+                        daoHigh.deleteHighlight(Integer.valueOf(request.getParameter("id")),Integer.valueOf(request.getParameter("idPostagem")) );
+                        
+                        dispatcher = request.getRequestDispatcher("/view/posts/read.jsp");
+                        dispatcher.forward(request, response);
+                    
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(postagemController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(postagemController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+               break;
             }
                 
 

@@ -24,27 +24,7 @@
                         
                       <div class="col">
                           
-                        <ul class="list-group">
-                            <c:forEach var="area" items="${requestScope.areasList}">
-                                <c:choose>
-                                    <c:when test="${requestScope.areaDeBusca == area.areaId}">
-                                        <a href="${pageContext.servletContext.contextPath}/area?area=${area.areaId}">
-                                            <li class="list-group-item active"><c:out value="${area.nome}"/></li>
-                                        </a>
-                                    </c:when>
-                                    <c:when test="${requestScope.areaDeBusca != area.areaId}">
-                                        <a href="${pageContext.servletContext.contextPath}/area?area=${area.areaId}">
-                                            <li class="list-group-item"><c:out value="${area.nome}"/></li>
-                                        </a>
-                                    </c:when>
-                                    <c:otherwise> 
-                                    <a href="${pageContext.servletContext.contextPath}/area?area=${area.areaId}">
-                                            <li class="list-group-item active"><c:out value="${area.nome}"/></li>
-                                        </a>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:forEach>
-                        </ul>
+                        
                           
                       </div>
                     <div class="col-6">
@@ -73,45 +53,68 @@
                     </div>
                         
                     <div class="col">
+                        <form class="form"
+                            action="${pageContext.servletContext.contextPath}/busca"
+                            method="POST">
+                            <label>Ordenar Postagens por: </label>
+                            <div class="form-group">
+                                <c:choose>
+                                    <c:when test="${ordenarPor == 1}">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="order" id="Mais_vistos" value="1" checked>
+                                            <label class="form-check-label" for="order">
+                                              Mais vistos
+                                            </label>
+                                          </div>
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="order" id="Mais_recentes" value="2">
+                                            <label class="form-check-label" for="order">
+                                              Mais recentes
+                                            </label>
+                                          </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="order" id="Mais_vistos" value="1" >
+                                            <label class="form-check-label" for="order">
+                                              Mais vistos
+                                            </label>
+                                          </div>
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="order" id="Mais_recentes" value="2" checked>
+                                            <label class="form-check-label" for="order">
+                                              Mais recentes
+                                            </label>
+                                          </div>
+                                    </c:otherwise>
+                                </c:choose>
+                                
+                            </div>
+                                
+                                
+                            
+                            <label for="area">Escolher area das Postagens:</label>
+                            <select name="area" id="area" class="form-control form-group">
+                           
+                               <c:forEach var="area" items="${requestScope.areasList}">
+                                    <c:choose>
+                                        
+                                        <c:when test="${requestScope.areaDeBusca == area.areaId}">
+                                            <option value="${area.areaId}" selected><c:out value="${area.nome}"/></option>
+                                        </c:when>
+                                       <c:otherwise >
+                                           <option value="${area.areaId}" ><c:out value="${area.nome}"/></option>
+                                        </c:otherwise>
+                                                                            
+                                    </c:choose>
+                                </c:forEach> 
+                             </select>
+                            <br/>
+                           <button type="submit" class="btn btn-light mb-2">aplicar</button>
+                            
+                        </form>
                         
-                      
-                          <c:choose>
-                              <c:when test="${requestScope.ordenarPor == 1}">
-                                <ul class="list-group">
-                                    <a href="${pageContext.servletContext.contextPath}/busca?ordenarPor=1">
-                                        <li class="list-group-item active">Novas Postagens</li>
-                                    </a>
-
-                                     <a href="${pageContext.servletContext.contextPath}/busca?ordenarPor=2">
-                                        <li class="list-group-item">Mais vistas</li>
-                                    </a>
-                                </ul>
-                              </c:when>
-                              <c:when test="${requestScope.ordenarPor == 2}">
-                                  <ul class="list-group">
-                                <a href="${pageContext.servletContext.contextPath}/busca?ordenarPor=1">
-                                    <li class="list-group-item ">Novas Postagens</li>
-                                </a>
-
-                                 <a href="${pageContext.servletContext.contextPath}/busca?ordenarPor=2">
-                                    <li class="list-group-item active">Mais vistas</li>
-                                </a>
-                                    </ul>
-                              </c:when>
-                              <c:otherwise>  
-                                  <ul class="list-group">
-                                    <a href="${pageContext.servletContext.contextPath}/busca?ordenarPor=1">
-                                        <li class="list-group-item active">Novas Postagens</li>
-                                    </a>
-
-                                     <a href="${pageContext.servletContext.contextPath}/busca?ordenarPor=2">
-                                        <li class="list-group-item">Mais vistas</li>
-                                    </a>
-                                </ul>
-                                </c:otherwise>  
-                           </c:choose>
-                      
-                        
+                                                   
                     </div>
                         
                 </div>

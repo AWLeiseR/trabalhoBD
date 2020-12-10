@@ -93,7 +93,7 @@ public class loginController extends HttpServlet {
                             
                             if(session.getAttribute("ordenarPor") == null){
                                 
-                                request.setAttribute("ordenarPor", ordenarPor);
+                                request.getSession().setAttribute("ordenarPor", ordenarPor);
                             
                             }
                             
@@ -134,25 +134,7 @@ public class loginController extends HttpServlet {
 
                     response.sendRedirect(request.getContextPath() + "/");
                 }
-                case "/busca":{
-                    ordenarPor = Integer.parseInt(request.getParameter("ordenarPor"));
-                    
-                    request.setAttribute("ordenarPor", ordenarPor);
-                   
-                     response.sendRedirect( "/");
-                    
-                    break;
-                }
-                case "/area":{
-                    
-                    areaDeBusca = Integer.parseInt(request.getParameter("area"));
-                    
-                    request.setAttribute("areaDeBusca", areaDeBusca);     
-                    
-                     response.sendRedirect("/");
-                     
-                    break;
-                }
+                
             }
     }
 
@@ -172,10 +154,10 @@ public class loginController extends HttpServlet {
         HttpSession session = request.getSession();
         
         int ordenarPor=1;
+        int areaDeBusca=0;
 
         switch (request.getServletPath()) {
-            case "/login":
-               
+            case "/login":{
                 user.setEmail(request.getParameter("inputEmail"));
                 user.setSenha(request.getParameter("inputSenha"));
 
@@ -185,15 +167,33 @@ public class loginController extends HttpServlet {
                     dao.authenticate(user);
 
                     session.setAttribute("usuario", user);
-                    session.setAttribute("ordenarPor", ordenarPor);
+                    request.getSession().setAttribute("ordenarPor", 1);
                     
                 } catch (ClassNotFoundException | IOException | SQLException | SecurityException ex) {
                     session.setAttribute("error", ex.getMessage());
+                } 
+                if(session.getAttribute("idPostagem")== null){
+                    response.sendRedirect(request.getContextPath() + "");
+                }else{
+                    response.sendRedirect("/posts/read?id"+session.getAttribute("idPostagem"));
                 }
+                
+                break;
+            }
+            case "/busca":{
+               
+                
+                //areaDeBusca = Integer.parseInt(request.getParameter("area"));
+                //System.out.println(ordenarPor);
+                request.getSession().setAttribute("ordenarPor",Integer.parseInt(request.getParameter("order")));
+                //request.setAttribute("ordenarPor", ordenarPor);
+                request.getSession().setAttribute("areaDeBusca", Integer.parseInt(request.getParameter("area")));
+                //request.setAttribute("areaDeBusca", areaDeBusca);     
 
-                response.sendRedirect(request.getContextPath() + "");
+                 response.sendRedirect(request.getContextPath() + "");
 
-
+                break;
+            }
 
         }        
     }
