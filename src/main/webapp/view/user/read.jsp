@@ -48,15 +48,13 @@
                 </div>
             </div>
               
-            <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/user">
-                <span>Voltar a pagina principal</span>
+            <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/user/update?id=${user.userId}">
+                <span>Alterar informações</span>
+            </a>
+                <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/">
+                <span>Voltar para o início</span>
             </a>
         </div>
-        
-        
-                                
-                       
-            
        
     </body>
 </html>

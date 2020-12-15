@@ -32,14 +32,17 @@ public class PgPostagemAreasDAO implements DAO<PostagemAreas>{
     
     private static final String CREATE_QUERY =
                                 "INSERT INTO revista.postagemareas(idpostagem,idareas) " +
-                                "VALUES(?,?,?);";
+                                "VALUES(?,?);";
      
      private static final String READ_QUERY_POSTAGEM =
                                 "SELECT idpostagem,idareas " +
                                 "FROM revista.postagemareas " +
                                 "WHERE idpostagem = ?;";
      
-     
+    private static final String UPDATE_QUERY =
+                                "UPDATE revista.postagemareas " +
+                                "SET idareas=? " +
+                                "WHERE idpostagem = ?;"; 
 
     private static final String DELETE_QUERY =
                                 "DELETE FROM revista.postagemareas " +
@@ -82,7 +85,7 @@ public class PgPostagemAreasDAO implements DAO<PostagemAreas>{
                     postagemArea.setIdAreas(result.getInt("idareas"));
                     postagemArea.setIdPostagem(id);
                 } else {
-                    throw new SQLException("Erro ao visualizar: PostagemArea não encontrado.");
+                    //throw new SQLException("Erro ao visualizar: PostagemArea não encontrado.");
                 }
             }
         } catch (SQLException ex) {
@@ -100,7 +103,27 @@ public class PgPostagemAreasDAO implements DAO<PostagemAreas>{
 
     @Override
     public void update(PostagemAreas t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY)) {
+            
+            statement.setInt(1, t.getIdAreas());
+            statement.setInt(2, t.getIdPostagem());
+            
+            
+            if (statement.executeUpdate() < 1) {
+                throw new SQLException("Erro ao editar: postagem não encontrado.");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            if (ex.getMessage().equals("Erro ao editar: postagem não encontrado.")) {
+                throw ex;
+            } else if (ex.getMessage().contains("not-null")) {
+                throw new SQLException("Erro ao editar a postagem: pelo menos um campo está em branco.");
+            } else {
+                throw new SQLException("Erro ao editar postagem.");
+            }
+        }
     }
 
     @Override

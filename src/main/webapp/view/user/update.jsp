@@ -58,11 +58,6 @@
                     <p class="help-block"></p>
                 </div>
 
-                <div class="form-group">
-                    <label class="control-label">Função</label>
-                    <input class="form-control" d="usuario-funcao" type="text" name="funcao" value="${user.funcao}" required/>
-                </div>
-
                 <div class="text-center">
                     <button class="btn btn-lg btn-primary" type="submit">Salvar</button>
                 </div>

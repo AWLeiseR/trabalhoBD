@@ -12,6 +12,8 @@ import java.sql.Date;
  * @author Alan
  */
 public class Postagem {
+
+    
     private int postagemId;
     private String titulo;
     private String subtitulo;
@@ -20,6 +22,22 @@ public class Postagem {
     private int visualizacoes;
     private Date createAt;
     private Date alteradoAt;
+    private int autor;
+    
+    /**
+     * @return the autor
+     */
+    public int getAutor() {
+        return autor;
+    }
+
+    /**
+     * @param autor the autor to set
+     */
+    public void setAutor(int autor) {
+        this.autor = autor;
+    }
+   
 
     /**
      * @return the postagemId

@@ -31,8 +31,8 @@ public class PgPostagemDAO implements PostagemDAO  {
     }
 
     private static final String CREATE_QUERY =
-                                "INSERT INTO revista.postagem(postagemid,titulo,subtitulo,descricao,conteudo,visualizacoes,createAt,alteradoAt) " +
-                                "VALUES(?,?,?,?,?,?,?,?);";
+                                "INSERT INTO revista.postagem(postagemid,titulo,subtitulo,descricao,conteudo,visualizacoes,createAt,alteradoAt,autor) " +
+                                "VALUES(?,?,?,?,?,?,?,?,?);";
 
     private static final String READ_QUERY =
                                 "SELECT titulo,subtitulo,descricao,conteudo,visualizacoes,createAt,alteradoAt " +
@@ -54,7 +54,7 @@ public class PgPostagemDAO implements PostagemDAO  {
                                 "ORDER BY postagemid;";
     
     private static final String POSTAGENS_RECENTES=
-                                 "SELECT titulo, subtitulo, descricao  " +
+                                 "SELECT postagemid, titulo, subtitulo, descricao  " +
                                  "FROM revista.postagem " +
                                  "ORDER BY createAt DESC LIMIT 3;";
     
@@ -91,6 +91,7 @@ public class PgPostagemDAO implements PostagemDAO  {
             statement.setInt(6, t.getVisualizacoes());
             statement.setDate(7, t.getCreateAt());
             statement.setDate(8, t.getCreateAt());
+            statement.setInt(9,t.getAutor());
 
             statement.executeUpdate();
         } catch (SQLException ex) {
@@ -223,9 +224,10 @@ public class PgPostagemDAO implements PostagemDAO  {
              ResultSet result = statement.executeQuery()) {
             while (result.next()) {
                 Postagem post = new Postagem();
+                post.setPostagemId(Integer.valueOf(result.getString("postagemid")));
                 post.setTitulo(result.getString("titulo"));
-                post.setSubtitulo("subtitulo");
-                post.setDescricao("descricao");               
+                post.setSubtitulo(result.getString("subtitulo"));
+                post.setDescricao(result.getString("descricao"));               
                 postList.add(post);
             }
         } catch (SQLException ex) {
@@ -240,10 +242,13 @@ public class PgPostagemDAO implements PostagemDAO  {
     @Override
     public int numeroVisualizacoes(int id) throws SQLException {
          int visualizacoes ;
-
+         
         try (PreparedStatement statement = connection.prepareStatement(GET_NUMERO_VIUS)) {
             statement.setInt(1, id);
+            
             try (ResultSet result = statement.executeQuery()) {
+               
+                
                 if (result.next()) {
                    
                    visualizacoes = result.getInt("visualizacoes");

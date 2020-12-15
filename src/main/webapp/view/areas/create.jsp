@@ -5,15 +5,19 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib tagdir="/WEB-INF/tags/session" prefix="session"%>
+<session:autenticationModerador context="${pageContext.servletContext.contextPath}"/>
+
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Criação de Area</title>
+        <title>Criação de Área</title>
     </head>
     <body>
         <div class="container">
-            <h2 class="text-center">Inserção de um novo usuário</h2>
+            <h2 class="text-center">Inserção de uma nova área</h2>
 
             <form
                 class="form"

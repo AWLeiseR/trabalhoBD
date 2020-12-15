@@ -23,9 +23,7 @@
                     <p>
                     <span class="h4"><c:out value="${post.subtitulo}"/></span>
                     </p>
-                    <p>
-                    <span class="h4"><c:out value="${post.descricao}"/></span>
-                    </p>
+                    
                     <p> 
                         <span class="card-text"><c:out value="${post.conteudo}"/></span>
                     </p>
@@ -33,6 +31,15 @@
                 </div>
                      <div class="card-footer">
                          <c:choose>
+                            <c:when test="${aux == 0}">
+                                <a href="${pageContext.servletContext.contextPath}/posts/highlight?id=${usuario.userId}&idPostagem=${post.postagemId}" >
+                                    <div class="btn btn-outline-primary">
+                                        <i class="fa fa-angle-double-up"></i>
+                                        <p>Dar um Highlight</p>
+                                    </div>
+                                </a>
+                            </c:when>     
+
                             <c:when test="${aux == 1}">
                                 <a href="${pageContext.servletContext.contextPath}/posts/tirarHighlight?id=${usuario.userId}&idPostagem=${post.postagemId}" >
                                     <div class="btn btn-outline-primary">
@@ -41,23 +48,11 @@
                                     </div>
                                 </a>
                             </c:when>
-                            <c:when test="${aux != 1}">
-                                <a href="${pageContext.servletContext.contextPath}/posts/highlight?id=${usuario.userId}&idPostagem=${post.postagemId}" >
-                                    <div class="btn btn-outline-primary">
-                                        <i class="fa fa-angle-double-up"></i>
-                                        <p>Dar um Highlight</p>
-                                    </div>
-                                </a>
-                            </c:when>
-                            <c:otherwise>
-                                <a href="${pageContext.servletContext.contextPath}/posts/login?id=${post.postagemId}" >
-                                    <div class="btn btn-outline-primary">
-                                        <i class="fa fa-angle-double-up"></i>
-                                        <p>Dar um Highlight</p>
-                                    </div>
-                                </a>
-                            </c:otherwise>     
-                         </c:choose>
+                              
+                            <c:otherwise >
+                                
+                            </c:otherwise >
+                        </c:choose>
                         
                          
                         <span class="card-text">Id: <c:out value="${post.postagemId}"/></span>

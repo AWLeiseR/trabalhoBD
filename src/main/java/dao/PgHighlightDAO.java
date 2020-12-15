@@ -20,7 +20,7 @@ import model.Postagem;
  *
  * @author Alan
  */
-public class PgHighlightDAO implements DAO<Highlight> {
+public class PgHighlightDAO implements HighlightDAO {
     
     private final Connection connection;
     
@@ -29,26 +29,26 @@ public class PgHighlightDAO implements DAO<Highlight> {
     }
 
     private static final String CREATE_QUERY =
-                                "INSERT INTO revista.highlight (idUser,idPostagem) " +
+                                "INSERT INTO revista.highlights (idUser,idPostagem) " +
                                 "VALUES(?,?);";
 
     private static final String READ_QUERY =
                                 "SELECT idPostagem " +
-                                "FROM revista.highlight " +
+                                "FROM revista.highlights " +
                                 "WHERE idUser = ?;";
 
     private static final String DELETE_QUERY =
-                                "DELETE FROM revista.highlight " +
+                                "DELETE FROM revista.highlights " +
                                 "WHERE idUser = ? AND idPostagem = ? ;";
 
     private static final String ALL_QUERY =
                                 "SELECT idPostagem, idUser " +
-                                "FROM revista.highlight " +
+                                "FROM revista.highlights " +
                                 "ORDER BY idPostagem;";
     
     private static final String HIGHLIGHT_DE_UMA_POSTAGEM = 
                                 "SELECT idPostagem, idUser " +
-                                "FROM revista.highlight " +
+                                "FROM revista.highlights " +
                                 "WHERE idUser = ? AND idPostagem = ? ;";
 
     @Override

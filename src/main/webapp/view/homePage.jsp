@@ -23,6 +23,16 @@
                     <div class="row">
                         
                       <div class="col">
+                         <a href="${pageContext.servletContext.contextPath}/user/read?id=${usuario.userId}"" class="btn btn-light mb-2">Meu perfil</a>
+                         <c:if test="${usuario.funcao == 'autor' || usuario.funcao == 'moderador' }">
+                          <a href="${pageContext.servletContext.contextPath}/posts/create"" class="btn btn-light mb-2">Escrever Postagen</a>
+                         </c:if>
+                         <c:if test="${usuario.funcao == 'moderador' }">
+                           <a href="${pageContext.servletContext.contextPath}/posts"" class="btn btn-light mb-2">Gerenciar Postagens</a>
+                         <a href="${pageContext.servletContext.contextPath}/user"" class="btn btn-light mb-2">Gerenciar usuários</a>  
+                         </c:if>
+                         
+                              
                           
                         
                           

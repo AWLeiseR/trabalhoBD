@@ -5,10 +5,14 @@
  */
 package dao;
 
+import model.PostagemAreas;
+
 /**
  *
  * @author Alan
  */
 public interface PostagemAreasDAO {
+
+    
     
 }

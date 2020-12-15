@@ -70,14 +70,15 @@ public class loginController extends HttpServlet {
             switch (request.getServletPath()) {
                 case "": {
                     session = request.getSession(false);
-                    
+                     try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
+                         daoPostagem = (PostagemDAO) daoFactory.getPostagemDAO();
                     if (session != null && session.getAttribute("usuario") != null) {
                         
-                        try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
+                       
                            user = (User) session.getAttribute("usuario");
                             
                             daoAreas = (AreasDAO) daoFactory.getAreaDAO();
-                            daoPostagem = (PostagemDAO) daoFactory.getPostagemDAO();
+                            
                             daoUserAreas = (DAO<UserAreas>)  daoFactory.getUserAreasDAO();
                             
                             if(session.getAttribute("areaDeBusca") == null){
@@ -93,7 +94,7 @@ public class loginController extends HttpServlet {
                             
                             if(session.getAttribute("ordenarPor") == null){
                                 
-                                request.getSession().setAttribute("ordenarPor", ordenarPor);
+                                request.setAttribute("ordenarPor", ordenarPor);
                             
                             }
                             
@@ -107,15 +108,17 @@ public class loginController extends HttpServlet {
                             
                             dispatcher = request.getRequestDispatcher("/view/homePage.jsp");
                             
-                        }   catch (ClassNotFoundException | SQLException ex) {
-                            Logger.getLogger(loginController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }else{
                         
-                        dispatcher = request.getRequestDispatcher("/view/index.jsp");
+                        }else{
+                            List<Postagem> postList = daoPostagem.maisRecente();
+                            request.setAttribute("postList", postList);
+                            dispatcher = request.getRequestDispatcher("/view/index.jsp");
+                        }
+                        dispatcher.forward(request, response);
+                    }catch (ClassNotFoundException | SQLException ex) {
+                            Logger.getLogger(loginController.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
-                    dispatcher.forward(request, response);
+                    
 
                     break;
                 }
@@ -165,9 +168,11 @@ public class loginController extends HttpServlet {
                     dao = (UserDAO) daoFactory.getUserDAO();
 
                     dao.authenticate(user);
-
+                    
+                    user.setFuncao(dao.getFuncao(user));
+                    
                     session.setAttribute("usuario", user);
-                    request.getSession().setAttribute("ordenarPor", 1);
+                    request.setAttribute("ordenarPor", 1);
                     
                 } catch (ClassNotFoundException | IOException | SQLException | SecurityException ex) {
                     session.setAttribute("error", ex.getMessage());

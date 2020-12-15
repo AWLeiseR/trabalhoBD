@@ -55,7 +55,7 @@ public class PgUserDAO implements UserDAO {
     private static final String GET_FUNCAO =
                                 "SELECT funcao " +
                                 "FROM revista.users " +
-                                "WHERE userId=?;";
+                                "WHERE email = ? AND senha = md5(?);";
     
     private static final String UPDATE_FUNCAO = 
                                 "UPDATE revista.users "+
@@ -65,6 +65,11 @@ public class PgUserDAO implements UserDAO {
                                 "SELECT userid, nome " +
                                 "FROM revista.users " +
                                 "WHERE email = ? AND senha = md5(?);";
+    
+    private static final String GET_FUNCAO_ID =
+                                "SELECT funcao " +
+                                "FROM revista.users " +
+                                "WHERE userId=?;";
 
     public PgUserDAO(Connection connection) {
         this.connection = connection;
@@ -226,7 +231,7 @@ public class PgUserDAO implements UserDAO {
                 if (result.next()) {
                     user.setUserId(result.getInt("userid"));
                     user.setNome(result.getString("nome"));
-                    
+                   
                 } else {
                     throw new SecurityException("Login ou senha incorretos.");
                 }
@@ -244,11 +249,12 @@ public class PgUserDAO implements UserDAO {
     }
 
     @Override
-    public String getFuncao(int id) throws SQLException {
+    public String getFuncao(User user) throws SQLException {
        String funcao;
 
-        try (PreparedStatement statement = connection.prepareStatement(READ_QUERY)) {
-            statement.setInt(1, id);
+        try (PreparedStatement statement = connection.prepareStatement(GET_FUNCAO)) {
+             statement.setString(1, user.getEmail());
+            statement.setString(2, user.getSenha());
             try (ResultSet result = statement.executeQuery()) {
                 if (result.next()) {
                     funcao=result.getString("funcao");
@@ -296,6 +302,33 @@ public class PgUserDAO implements UserDAO {
                 throw new SQLException("Erro ao editar usuário.");
             }
         }
+    }
+
+    @Override
+    public String getFuncao(int id) throws SQLException {
+        String funcao;
+
+        try (PreparedStatement statement = connection.prepareStatement(GET_FUNCAO_ID)) {
+            statement.setInt(1, id);
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    funcao=result.getString("funcao");
+                    
+                } else {
+                    throw new SQLException("Erro ao visualizar: usuário não encontrado.");
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgUserDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+            
+            if (ex.getMessage().equals("Erro ao visualizar: usuário não encontrado.")) {
+                throw ex;
+            } else {
+                throw new SQLException("Erro ao visualizar usuário.");
+            }
+        }
+
+        return funcao;
     }
 
 }

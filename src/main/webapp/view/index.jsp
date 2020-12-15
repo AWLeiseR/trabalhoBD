@@ -18,13 +18,13 @@
             <div class="container">
              <h1 class="display-4">Comp-magazine!</h1>
              <p class="lead">Conteúdo de computação feito por computeiros.</p>
+             <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/user/create">Inscrever-se</a>
+             <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/login">Login</a>
             </div>
             
         </div>
         <div class="container">
             
-           
-
             <c:forEach var="post" items="${requestScope.postList}">
                 <div class="card">
                     <div class="card-header">
@@ -46,10 +46,7 @@
                         <br/>
             </c:forEach>
 
-           <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/user">Ver usuários</a>
-            <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/posts">Ver postagens</a>
-            <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/areas">Ver áreas</a>
-            <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/login">Login</a>
+                       
         </div> 
         
     </body>

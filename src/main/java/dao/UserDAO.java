@@ -15,6 +15,7 @@ import model.User;
 public interface UserDAO extends DAO<User> {
     public void authenticate(User usuario) throws SQLException, SecurityException;
     public User getByLogin(String login) throws SQLException;
+    public String getFuncao(User user) throws SQLException;
     public String getFuncao(int id) throws SQLException;
     public void updateFuncao(int id,String funcao) throws SQLException;
 }

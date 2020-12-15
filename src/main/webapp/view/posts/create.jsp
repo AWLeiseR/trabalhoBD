@@ -43,10 +43,15 @@
                     <textarea id="postagem-conteudo" class="form-control" type="text" name="conteudo" rows="10" required ></textarea>
                 </div>
                
-                <div class="form-group">
-                    <label class="control-label">Área</label>
-                    <input class="form-control" d="postagem-area" type="text" name="area" required/>
-                </div>
+                 <label for="area">Escolher area das Postagens:</label>
+                <select name="area" id="area" class="form-control form-group">
+
+                   <c:forEach var="area" items="${requestScope.areasList}">
+
+                    <option value="${area.areaId}" ><c:out value="${area.nome}"/></option>
+
+                    </c:forEach> 
+                 </select>
 
                 <div class="text-center">
                     <button class="btn btn-lg btn-primary" type="submit">Salvar</button>

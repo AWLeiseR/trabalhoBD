@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -43,6 +44,20 @@
                     <label class="control-label" for="post-conteudo">Conteudo</label>
                     <textarea id="post-conteudo" class="form-control" type="text" name="conteudo" required >${post.conteudo}</textarea>
                 </div>
+                <select name="area" id="area" class="form-control form-group">
+                <c:forEach var="area" items="${requestScope.areasList}">
+                    <c:choose>
+
+                        <c:when test="${requestScope.areaDeBusca == area.areaId}">
+                            <option value="${area.areaId}" selected><c:out value="${area.nome}"/></option>
+                        </c:when>
+                       <c:otherwise >
+                           <option value="${area.areaId}" ><c:out value="${area.nome}"/></option>
+                        </c:otherwise>
+
+                    </c:choose>
+                </c:forEach> 
+                </select>
                 <div class="text-center">
                     <button class="btn btn-lg btn-primary" type="submit">Salvar</button>
                 </div>

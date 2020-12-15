@@ -5,7 +5,9 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib tagdir="/WEB-INF/tags/session" prefix="session"%>
+<session:autenticationModerador context="${pageContext.servletContext.contextPath}"/>
 <!DOCTYPE html>
 <html>
     <head>
