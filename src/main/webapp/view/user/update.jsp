@@ -10,7 +10,7 @@
 <html>
     <head>
         <%@include file="/view/includes/head.jsp" %>
-        <title>[BD 2020] Usuários: cadastro</title>
+        <title>Alterar perfil</title>
     </head>
     <body>
 
@@ -57,7 +57,7 @@
                            pattern=".{4,}" title="Pelo menos 4 caracteres."/>
                     <p class="help-block"></p>
                 </div>
-
+                    <input type="hidden" name="funcao" value="${user.funcao}">
                 <div class="text-center">
                     <button class="btn btn-lg btn-primary" type="submit">Salvar</button>
                 </div>

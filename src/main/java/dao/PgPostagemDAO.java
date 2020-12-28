@@ -74,10 +74,10 @@ public class PgPostagemDAO implements PostagemDAO  {
                                 "ORDER BY visualizacoes DESC LIMIT 3;";
     
     private static final String POSTAGENS_AREA_DO_USER = 
-                                "select postagemid,titulo,subtitulo,descricao " +
-                                "from revista.userareas, revista.postagemareas, revista.postagem " + 
-                                "where iduser = ? and postagemareas.idareas = ? AND postagem.postagemid = postagemareas.idpostagem "+
-                                "order by ? Limit 3;";
+                                    "select postagemid,titulo,subtitulo,descricao " +
+                                    "from revista.userareas, revista.postagemareas, revista.postagem " + 
+                                    "where iduser = ? and postagemareas.idareas = ? AND postagem.postagemid = postagemareas.idpostagem "+
+                                    "order by ? Limit 3;";
 
     @Override
     public void create(Postagem t) throws SQLException {
@@ -90,7 +90,7 @@ public class PgPostagemDAO implements PostagemDAO  {
             statement.setString(5, t.getConteudo());
             statement.setInt(6, t.getVisualizacoes());
             statement.setDate(7, t.getCreateAt());
-            statement.setDate(8, t.getCreateAt());
+            statement.setDate(8, t.getAlteradoAt());
             statement.setInt(9,t.getAutor());
 
             statement.executeUpdate();
@@ -341,7 +341,7 @@ public class PgPostagemDAO implements PostagemDAO  {
             }
             statement.setString(3, order);
             
-            
+           // System.out.println(statement);
             try (ResultSet result = statement.executeQuery()) {
                 while (result.next()) {
                     Postagem post = new Postagem();

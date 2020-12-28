@@ -90,6 +90,8 @@ public class loginController extends HttpServlet {
                                 
                                 request.setAttribute("areaDeBusca", areaDeBusca);
                             
+                            }else{
+                                areaDeBusca=(int) session.getAttribute("areaDeBusca");
                             }
                             
                             if(session.getAttribute("ordenarPor") == null){
@@ -97,8 +99,8 @@ public class loginController extends HttpServlet {
                                 request.setAttribute("ordenarPor", ordenarPor);
                             
                             }
-                            
-                            List<Postagem> postList = daoPostagem.postagemAreaUser(user.getUserId(), areaDeBusca, ordenarPor);
+                            System.out.println(session.getAttribute("areaDeBusca"));
+                            List<Postagem> postList = daoPostagem.postagemAreaUser(user.getUserId(),areaDeBusca, ordenarPor);
                             List<AreasDeInteresse> areasList = daoAreas.areasDoUser(user.getUserId());
                             
                             
@@ -189,11 +191,12 @@ public class loginController extends HttpServlet {
                
                 
                 //areaDeBusca = Integer.parseInt(request.getParameter("area"));
-                //System.out.println(ordenarPor);
+                //System.out.println(Integer.parseInt(request.getParameter("order")));
                 request.getSession().setAttribute("ordenarPor",Integer.parseInt(request.getParameter("order")));
                 //request.setAttribute("ordenarPor", ordenarPor);
-                request.getSession().setAttribute("areaDeBusca", Integer.parseInt(request.getParameter("area")));
-                //request.setAttribute("areaDeBusca", areaDeBusca);     
+               request.getSession().setAttribute("areaDeBusca", Integer.parseInt(request.getParameter("area")));
+                //System.out.println(session.getAttribute("areaDeBusca"));
+               // request.setAttribute("areaDeBusca", Integer.parseInt(request.getParameter("area")));     
 
                  response.sendRedirect(request.getContextPath() + "");
 

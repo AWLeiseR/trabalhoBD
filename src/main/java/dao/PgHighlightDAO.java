@@ -29,17 +29,17 @@ public class PgHighlightDAO implements HighlightDAO {
     }
 
     private static final String CREATE_QUERY =
-                                "INSERT INTO revista.highlights (idUser,idPostagem) " +
-                                "VALUES(?,?);";
+                                "INSERT INTO revista.highlights (idUser,idPostagem, highlightDate) " +
+                                "VALUES(?,?,?);";
 
     private static final String READ_QUERY =
-                                "SELECT idPostagem " +
+                                "SELECT idpostagem " +
                                 "FROM revista.highlights " +
-                                "WHERE idUser = ?;";
+                                "WHERE iduser = ?;";
 
     private static final String DELETE_QUERY =
                                 "DELETE FROM revista.highlights " +
-                                "WHERE idUser = ? AND idPostagem = ? ;";
+                                "WHERE iduser = ? AND idpostagem = ? ;";
 
     private static final String ALL_QUERY =
                                 "SELECT idPostagem, idUser " +
@@ -58,6 +58,7 @@ public class PgHighlightDAO implements HighlightDAO {
            
             statement.setInt(1, t.getIdUser());
             statement.setInt(2, t.getIdPostagem());
+            statement.setDate(3,t.getHighlightDate());
             
 
             statement.executeUpdate();
@@ -93,10 +94,12 @@ public class PgHighlightDAO implements HighlightDAO {
     }
 
     
+    @Override
     public void deleteHighlight(Integer id, Integer idPostagem) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
             statement.setInt(1, id);
             statement.setInt(2, idPostagem);
+            
             if (statement.executeUpdate() < 1) {
                 throw new SQLException("Erro ao excluir: highlight não encontrado.");
             }
@@ -119,8 +122,8 @@ public class PgHighlightDAO implements HighlightDAO {
              ResultSet result = statement.executeQuery()) {
             while (result.next()) {
                 Highlight high = new Highlight();
-                high.setIdUser(result.getInt("idUser"));
-                high.setIdPostagem(result.getInt("idPostagem"));
+                high.setIdUser(result.getInt("iduser"));
+                high.setIdPostagem(result.getInt("idpostagem"));
                highList.add(high);
             }
         } catch (SQLException ex) {
@@ -132,24 +135,26 @@ public class PgHighlightDAO implements HighlightDAO {
         return highList;
     }
     
+    @Override
     public int checkHighlight(int id, int idpostagem) throws SQLException {
-        Highlight high = new Highlight();
+        
         try(PreparedStatement statement = connection.prepareStatement(READ_QUERY)){
              statement.setInt(1, id);
             try (ResultSet result = statement.executeQuery()) {
                 if (result.next()) {
-                    high.setIdUser(result.getInt("idUser"));
-                    high.setIdPostagem(result.getInt("idPostagem"));
+                    
+                   
                     return 1;
                 } else {
-                    throw new SQLException("Erro ao visualizar: postagem não encontrado.");
+                    
+                    return 0;
                 }
             }
         }catch (SQLException ex){
             Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
-
+            return 0;
         }
-        return 0;
+        
     }
 
     @Override

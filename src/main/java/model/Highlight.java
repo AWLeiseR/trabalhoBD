@@ -5,13 +5,17 @@
  */
 package model;
 
+import java.sql.Date;
+
 /**
  *
  * @author Alan
  */
 public class Highlight {
+
     private int idUser;
     private int idPostagem;
+    private Date highlightDate;
     /**
      * @return the idUser
      */
@@ -39,5 +43,17 @@ public class Highlight {
     public void setIdPostagem(int idPostagem) {
         this.idPostagem = idPostagem;
     }
-    
+    /**
+     * @return the highlightDate
+     */
+    public Date getHighlightDate() {
+        return highlightDate;
+    }
+
+    /**
+     * @param highlightDate the highlightDate to set
+     */
+    public void setHighlightDate(Date highlightDate) {
+        this.highlightDate = highlightDate;
+    }
 }

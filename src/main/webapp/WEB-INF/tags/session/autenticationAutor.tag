@@ -9,7 +9,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@attribute name="context" required="true"%>
 
-<c:if test="${empty sessionScope.usuario || usuario.funcao != 'autor' || usuario.funcao != 'moderador'}">
+<c:if test="${empty sessionScope.usuario || usuario.funcao != 'autor' && usuario.funcao != 'moderador'}">
    
         <c:redirect url="/" />
 

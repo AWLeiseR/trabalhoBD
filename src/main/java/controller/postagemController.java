@@ -143,14 +143,12 @@ public class postagemController extends HttpServlet {
                     dao = daoFactory.getPostagemDAO();
                     
                     daoPost = (PostagemDAO) daoFactory.getPostagemDAO();
-                    session.getAttribute("usuario");
+                    session = request.getSession();
                     if (session != null && session.getAttribute("usuario") != null) {
                         user = (User) session.getAttribute("usuario");
                         daoHigh = (HighlightDAO) daoFactory.getHighlightDAO();
                         aux = daoHigh.checkHighlight(user.getUserId(), Integer.valueOf(request.getParameter("id")));
-                        System.out.println(aux);
-                        System.out.println(aux);
-                        System.out.println(aux);
+                        
                         session.setAttribute("usuario",user);
                         request.setAttribute("aux",aux);
                     }
@@ -204,9 +202,14 @@ public class postagemController extends HttpServlet {
                         int userId=Integer.valueOf(request.getParameter("id"));
                         daoHigh =  (HighlightDAO) daoFactory.getHighlightDAO();
                         Highlight high = new Highlight();
+                        
+                        long millis=System.currentTimeMillis();  
+                            
+                        java.sql.Date data = new java.sql.Date(millis);
                         high.setIdPostagem(postagemId);
-                        System.out.println(Integer.valueOf(request.getParameter("idPostagem")));
+                       // System.out.println(Integer.valueOf(request.getParameter("idPostagem")));
                         high.setIdUser(userId);
+                        high.setHighlightDate(data);
                         daoHigh.create(high);
                         user.setUserId(userId);
                         //session.setAttribute("usuario",user);
@@ -226,7 +229,7 @@ public class postagemController extends HttpServlet {
                         
                         daoHigh.deleteHighlight(Integer.valueOf(request.getParameter("id")),Integer.valueOf(request.getParameter("idPostagem")) );
                         
-                        dispatcher = request.getRequestDispatcher("/view/posts/read.jsp");
+                        dispatcher = request.getRequestDispatcher("/posts/read?id="+request.getParameter("idPostagem"));
                         dispatcher.forward(request, response);
                     
                 } catch (ClassNotFoundException | SQLException ex) {

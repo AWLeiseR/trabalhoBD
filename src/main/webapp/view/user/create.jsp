@@ -52,7 +52,7 @@
                     </div>
 
                 </div>  
-                <div>
+<!--                <div>
                     <label >Escolha uma Área de interesse</label>
                     <select name="areas">
                         <c:forEach var="area" items="${requestScope.areasList}">
@@ -61,6 +61,13 @@
 
                         </c:forEach>
                     </select>
+                </div>-->
+                <div>
+                    <label >Escolha uma Área de interesse</label>
+                    <c:forEach var="area" items="${requestScope.areasList}">
+                        <input type="checkbox" id="${area.areaId}" name="areas" value="${area.areaId}">
+                        <label for="${area.areaId}"><c:out value="${area.nome}"/></label><br>
+                    </c:forEach>
                 </div>
                 <div class="text-center">
                     <button class="btn btn-lg btn-primary" type="submit">Salvar</button>

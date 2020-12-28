@@ -10,8 +10,9 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <%@include file="/view/includes/head.jsp" %>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Alterar Funcao</title>
     </head>
     <body>
         <h2>Função atual: <c:out value="${funcao}"/></h2>

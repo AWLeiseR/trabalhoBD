@@ -198,11 +198,14 @@ public class userController extends HttpServlet {
                 }
                 
                 String area = request.getParameter("areas");
-                System.out.println(!"".equals(area) && area != null);
+                 //System.out.println(request.getParameter("areas"));
+                //System.out.println(!"".equals(area) && area != null);
                 if(!"".equals(area) && area != null){
+                    System.out.println(area);
                     userAreas.setIdAreas(Integer.valueOf(area));
                     
                 }
+                
 
                 switch (request.getServletPath()) {
 

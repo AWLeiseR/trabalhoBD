@@ -18,24 +18,25 @@
             <div class="container">
              <h1 class="display-4">Comp-magazine!</h1>
              <p class="lead">Bem-vindo <c:out value="${usuario.nome}"/>!</p>
+                          
             </div>
+             
                 <div class="container">
                     <div class="row">
                         
                       <div class="col">
-                         <a href="${pageContext.servletContext.contextPath}/user/read?id=${usuario.userId}"" class="btn btn-light mb-2">Meu perfil</a>
+                          <a class="btn btn-light mb-2" href="${pageContext.servletContext.contextPath}/logout">Logout</a>
+                         <a href="${pageContext.servletContext.contextPath}/user/read?id=${usuario.userId}" class="btn btn-light mb-2">Meu perfil</a>
                          <c:if test="${usuario.funcao == 'autor' || usuario.funcao == 'moderador' }">
-                          <a href="${pageContext.servletContext.contextPath}/posts/create"" class="btn btn-light mb-2">Escrever Postagen</a>
+                          <a href="${pageContext.servletContext.contextPath}/posts/create"" class="btn btn-light mb-2">Escrever Postagem</a>
                          </c:if>
                          <c:if test="${usuario.funcao == 'moderador' }">
-                           <a href="${pageContext.servletContext.contextPath}/posts"" class="btn btn-light mb-2">Gerenciar Postagens</a>
-                         <a href="${pageContext.servletContext.contextPath}/user"" class="btn btn-light mb-2">Gerenciar usuários</a>  
+                             <a href="${pageContext.servletContext.contextPath}/areas/create" class="btn btn-light mb-2">Criar área</a>
+                             <a href="${pageContext.servletContext.contextPath}/areas" class="btn btn-light mb-2">Gerenciar áreas</a>
+                             
+                           <a href="${pageContext.servletContext.contextPath}/posts" class="btn btn-light mb-2">Gerenciar postagens</a>
+                            <a href="${pageContext.servletContext.contextPath}/user" class="btn btn-light mb-2">Gerenciar usuários</a>  
                          </c:if>
-                         
-                              
-                          
-                        
-                          
                       </div>
                     <div class="col-6">
                         
@@ -103,13 +104,13 @@
                                 
                                 
                             
-                            <label for="area">Escolher area das Postagens:</label>
+                            <label for="area">Escolher area das Postagens: </label>
                             <select name="area" id="area" class="form-control form-group">
                            
                                <c:forEach var="area" items="${requestScope.areasList}">
                                     <c:choose>
                                         
-                                        <c:when test="${requestScope.areaDeBusca == area.areaId}">
+                                        <c:when test="${areaDeBusca == area.areaId}">
                                             <option value="${area.areaId}" selected><c:out value="${area.nome}"/></option>
                                         </c:when>
                                        <c:otherwise >

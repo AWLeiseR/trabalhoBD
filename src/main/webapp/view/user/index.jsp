@@ -6,6 +6,8 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib tagdir="/WEB-INF/tags/session" prefix="session"%>
+<session:autenticationModerador context="${pageContext.servletContext.contextPath}"/>
 
 <!DOCTYPE html>
 <html>
@@ -79,9 +81,7 @@
                     Inserir novo usuário
                 </a>
 
-                <button class="btn btn-lg btn-warning" data-toggle="modal" data-target=".modal_excluir_usuarios">
-                    Excluir múltiplos usuários
-                </button>
+                
                 
             </div>
         </div>  
