@@ -15,7 +15,7 @@
     <body>
 
         <div class="container">
-            <h2 class="text-center">Cadastro de novo membroo</h2>
+            <h2 class="text-center">Cadastro de novo membro</h2>
 
             <form
                 class="form"

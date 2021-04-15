@@ -18,4 +18,5 @@ public interface UserDAO extends DAO<User> {
     public String getFuncao(User user) throws SQLException;
     public String getFuncao(int id) throws SQLException;
     public void updateFuncao(int id,String funcao) throws SQLException;
+    public int getId(String email) throws SQLException;
 }

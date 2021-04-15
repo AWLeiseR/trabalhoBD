@@ -7,8 +7,10 @@ package controller;
 
 import dao.DAO;
 import dao.DAOFactory;
+import dao.UserAreasDAO;
 import dao.UserDAO;
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -53,9 +55,11 @@ public class userController extends HttpServlet {
             throws ServletException, IOException {
         UserDAO dao;
         DAO<AreasDeInteresse> daoAreas;
+        UserAreasDAO daoUserAreas;
         User user;
         RequestDispatcher dispatcher;
-         HttpSession session;
+        HttpSession session;
+        
         switch (request.getServletPath()) {
             case "/user": {
                 try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
@@ -91,7 +95,7 @@ public class userController extends HttpServlet {
             case "/user/read":{
                 try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
                     dao = (UserDAO) daoFactory.getUserDAO();
-
+                    
                     user = dao.read(Integer.parseInt(request.getParameter("id")));
                     request.setAttribute("user", user);
 
@@ -105,24 +109,38 @@ public class userController extends HttpServlet {
             }
             case "/user/update":{
                 try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
+                    
                     dao = (UserDAO) daoFactory.getUserDAO();
+                    daoAreas = daoFactory.getAreaDAO();
+                    daoUserAreas = (UserAreasDAO) daoFactory.getUserAreasDAO();
+                    
                     session = request.getSession();
+                    
                     user = (User) session.getAttribute("usuario");
-                    System.out.println(user.getUserId());
+                    
+                    System.out.println("--" + user.getUserId());
                     System.out.println(Integer.parseInt(request.getParameter("id")));
+                    
                     if(user.getUserId() == Integer.parseInt(request.getParameter("id"))){
+                        
+                        List<AreasDeInteresse> areasList = daoAreas.all();
+                        List<UserAreas> userAreasList = daoUserAreas.todasAreasUser(Integer.parseInt(request.getParameter("id")));
+                        
+                        request.setAttribute("areasList", areasList);
+                        request.setAttribute("userAreasList",userAreasList);
+                        
                         user = dao.read(Integer.parseInt(request.getParameter("id")));
                         request.setAttribute("user", user);
                         dispatcher = request.getRequestDispatcher("/view/user/update.jsp");
+                    
                     }else{
+                    
                         String funcao = dao.getFuncao(Integer.parseInt(request.getParameter("id"))) ;
-                       request.setAttribute("id",Integer.parseInt(request.getParameter("id")) );
+                        request.setAttribute("id",Integer.parseInt(request.getParameter("id")) );
                         request.setAttribute("funcao",funcao );
                        dispatcher = request.getRequestDispatcher("/view/user/updateFunction.jsp"); 
+                    
                     }
-                    
-                    
-
                     
                 dispatcher.forward(request, response);
                 } catch (ClassNotFoundException | IOException | SQLException ex) {
@@ -164,6 +182,8 @@ public class userController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
             DAOFactory daoFactory;
+            long d = System.currentTimeMillis();
+            Date date = new Date(d);
             try {
                 daoFactory = DAOFactory.getInstance();
                 UserDAO dao=(UserDAO) daoFactory.getUserDAO();
@@ -171,7 +191,7 @@ public class userController extends HttpServlet {
                 User user=new User();
                 UserAreas userAreas = new UserAreas();
                 RequestDispatcher dispatcher;
-                
+                List<UserAreas> vet ;
                 String servletPath = request.getServletPath();
                 
                 String nome= request.getParameter("nome");
@@ -196,31 +216,22 @@ public class userController extends HttpServlet {
                 if(!"".equals(funcao)){
                     user.setFuncao(funcao);
                 }
-                
-                String area = request.getParameter("areas");
-                 //System.out.println(request.getParameter("areas"));
-                //System.out.println(!"".equals(area) && area != null);
-                if(!"".equals(area) && area != null){
-                    System.out.println(area);
-                    userAreas.setIdAreas(Integer.valueOf(area));
-                    
-                }
-                
-
+      
+                String n[] = request.getParameterValues("areas");
+               
                 switch (request.getServletPath()) {
 
                     case "/user/create":{
-
+                        user.setCreateAt(date);
                         try {
-                            Random generate= new Random();
-                            int id=generate.nextInt(1000);
-                            user.setUserId(id);
-                            userAreas.setIdUser(id);
-                            
+  
                             dao.create(user);
-                            
-                            daoAreas.create(userAreas);
-                            
+                            userAreas.setIdUser(dao.getId(user.getEmail()));
+                            int i;
+                            for(i=0;i<n.length;i++){
+                                userAreas.setIdAreas(Integer.valueOf(n[i]));
+                                daoAreas.create(userAreas);
+                            }
 
                         } catch (SQLException ex) {
                             Logger.getLogger(userController.class.getName()).log(Level.SEVERE, null, ex);
@@ -231,10 +242,20 @@ public class userController extends HttpServlet {
                         try{
                             int userId; 
                             userId = Integer.valueOf(request.getParameter("userId"));
-
-                           user.setUserId(userId);
+                            userAreas.setIdUser(userId);
+                            user.setUserId(userId);
 
                             dao.update(user);
+//                            vet = daoAreas.all();
+//                            int i;
+//                            for(i=0;i<n.length;i++){
+//                                userAreas.setIdAreas(Integer.valueOf(n[i]));
+//                                if(vet.indexOf(Integer.valueOf(n[i]))== -1){
+//                                        userAreas.setIdAreas(Integer.valueOf(n[i]));
+//                                        daoAreas.create(userAreas);
+//                                }
+//                                
+//                            }
                         } catch (SQLException ex) {
                             Logger.getLogger(userController.class.getName()).log(Level.SEVERE, null, ex);
                         }

@@ -25,8 +25,8 @@ public class PgUserDAO implements UserDAO {
     private final Connection connection;
 
     private static final String CREATE_QUERY =
-                                "INSERT INTO revista.users(userid, nome, sobrenome, email, senha, funcao) " +
-                                "VALUES(?,?,?,?, md5(?),?);";
+                                "INSERT INTO revista.users(nome, sobrenome, email, senha, funcao, createat) " +
+                                "VALUES(?,?,?, md5(?),?, ?);";
 
     private static final String READ_QUERY =
                                 "SELECT nome, sobrenome, email,funcao " +
@@ -70,6 +70,11 @@ public class PgUserDAO implements UserDAO {
                                 "SELECT funcao " +
                                 "FROM revista.users " +
                                 "WHERE userId=?;";
+    
+     private static final String GET_EMAIL_ID =
+                                "SELECT userid " +
+                                "FROM revista.users " +
+                                "WHERE email=?;";
 
     public PgUserDAO(Connection connection) {
         this.connection = connection;
@@ -79,12 +84,12 @@ public class PgUserDAO implements UserDAO {
     public void create(User t) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY)) {
             
-            statement.setInt(1, t.getUserId());
-            statement.setString(2, t.getNome());
-            statement.setString(3, t.getSobrenome());
-            statement.setString(4, t.getEmail());
-            statement.setString(5, t.getSenha());
-            statement.setString(6, "membro");
+            statement.setString(1, t.getNome());
+            statement.setString(2, t.getSobrenome());
+            statement.setString(3, t.getEmail());
+            statement.setString(4, t.getSenha());
+            statement.setString(5, "membro");
+            statement.setDate(6, t.getCreateAt());
 
             statement.executeUpdate();
         } catch (SQLException ex) {
@@ -329,6 +334,34 @@ public class PgUserDAO implements UserDAO {
         }
 
         return funcao;
+    }
+
+    @Override
+    public int getId(String string) throws SQLException {
+        int id;
+
+        try (PreparedStatement statement = connection.prepareStatement(GET_EMAIL_ID)) {
+             statement.setString(1, string);
+            
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    id=result.getInt("userid");
+                    
+                } else {
+                    throw new SQLException("Erro ao visualizar: usuário não encontrado.");
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgUserDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+            
+            if (ex.getMessage().equals("Erro ao visualizar: usuário não encontrado.")) {
+                throw ex;
+            } else {
+                throw new SQLException("Erro ao visualizar usuário.");
+            }
+        }
+
+        return id; 
     }
 
 }

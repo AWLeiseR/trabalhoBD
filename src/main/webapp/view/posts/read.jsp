@@ -4,7 +4,7 @@
     Author     : Alan
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="Windows-1252"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
@@ -56,7 +56,7 @@
                         
                          
                         <span class="card-text">Id: <c:out value="${post.postagemId}"/></span>
-                        <span class="card-text">VisualizaÃ§Ãµes: <c:out value="${post.visualizacoes}"/></span>
+                        <span class="card-text">Visualizações: <c:out value="${post.visualizacoes}"/></span>
                         <span class="card-text">CreateAt: <c:out value="${post.createAt}"/></span>
                         <span class="card-text">UpdateAt: <c:out value="${post.alteradoAt}"/></span>
                      </div>

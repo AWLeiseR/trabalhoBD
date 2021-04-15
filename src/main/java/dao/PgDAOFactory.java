@@ -44,7 +44,13 @@ public class PgDAOFactory extends DAOFactory {
 
     @Override
     public DAO getHighlightDAO() {
-        return new PgHighlightDAO(this.connection);    }
+        return new PgHighlightDAO(this.connection);    
+    }
+
+    @Override
+    public DAO getVisualizacoesDAO() {
+         return new PgVisualizacoesDAO(this.connection);
+    }
     
     
 }

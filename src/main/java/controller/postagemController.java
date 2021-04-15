@@ -10,6 +10,7 @@ import dao.DAOFactory;
 import dao.HighlightDAO;
 import dao.PostagemAreasDAO;
 import dao.PostagemDAO;
+import dao.VisualizacoesDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -27,10 +28,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.AreasDeInteresse;
 import model.Highlight;
-
 import model.Postagem;
 import model.PostagemAreas;
 import model.User;
+import model.Visualizacoes;
 
 
 /**
@@ -76,6 +77,10 @@ public class postagemController extends HttpServlet {
             int visualizacoes;
             HttpSession session = null;
             Integer aux;
+            VisualizacoesDAO daoViews;
+            Visualizacoes visualizacao = null;
+            long d = System.currentTimeMillis();
+            Date date = new Date(d);
            
             switch (request.getServletPath()) {
                 case "/posts": {
@@ -141,23 +146,24 @@ public class postagemController extends HttpServlet {
                 case "/posts/read":{
                 try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
                     dao = daoFactory.getPostagemDAO();
-                    
+                    visualizacao = new Visualizacoes();
                     daoPost = (PostagemDAO) daoFactory.getPostagemDAO();
+                    daoViews = (VisualizacoesDAO) daoFactory.getVisualizacoesDAO();
+                         
                     session = request.getSession();
                     if (session != null && session.getAttribute("usuario") != null) {
                         user = (User) session.getAttribute("usuario");
                         daoHigh = (HighlightDAO) daoFactory.getHighlightDAO();
                         aux = daoHigh.checkHighlight(user.getUserId(), Integer.valueOf(request.getParameter("id")));
-                        
+                        visualizacao.setIdUser(user.getUserId());
                         session.setAttribute("usuario",user);
                         request.setAttribute("aux",aux);
                     }
+                    visualizacao.setIdPostagem(Integer.valueOf(request.getParameter("id")));
                     
-                    visualizacoes = daoPost.numeroVisualizacoes(Integer.valueOf(request.getParameter("id")));
+                    visualizacao.setVisualizacaoData(date);
                     
-                    visualizacoes++;
-                    
-                    daoPost.setNumeroVizualizacoes(Integer.valueOf(request.getParameter("id")), visualizacoes);
+                    daoViews.create(visualizacao);
                     
                     post = dao.read(Integer.valueOf(request.getParameter("id")));
                     

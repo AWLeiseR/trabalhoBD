@@ -11,7 +11,7 @@
     <head>
         <%@include file="/view/includes/head.jsp"%>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>View profile</title>
+        <title>Perfil</title>
     </head>
     <body>
         

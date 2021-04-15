@@ -17,11 +17,7 @@
         <div class="container">
             <h2 class="text-center">Modificação de Perfil do usuário</h2>
 
-            <form
-                class="form"
-                action="${pageContext.servletContext.contextPath}/user/update"
-                <%--enctype="multipart/form-data"--%>
-                method="POST">
+            
                 
                 <input type="hidden" name="userId" value="${user.userId}">
                 
@@ -57,11 +53,26 @@
                            pattern=".{4,}" title="Pelo menos 4 caracteres."/>
                     <p class="help-block"></p>
                 </div>
+                    
+                
+                    <label >Escolha uma Área de interesse</label>
+                    <c:forEach var="area" items="${requestScope.areasList}">
+                        <s:when test"${requestScope.userAreasList.indexOf(area.areaId)!= -1}">
+                            <input type="checkbox" id="${area.areaId}" name="areas" value="${area.areaId}" checked>
+                            <label for="${area.areaId}"><c:out value="${area.nome}"/></label><br>
+                        </s:when>
+                        <c:otherwise >
+                              <input type="checkbox" id="${area.areaId}" name="areas" value="${area.areaId}" >
+                                <label for="${area.areaId}"><c:out value="${area.nome}"/></label><br>
+                        </c:otherwise>
+                    </c:forEach>
+                
+                    
                     <input type="hidden" name="funcao" value="${user.funcao}">
                 <div class="text-center">
                     <button class="btn btn-lg btn-primary" type="submit">Salvar</button>
                 </div>
-            </form>
+            
         </div>
 
         <%@include file="/view/includes/scripts.jsp" %>

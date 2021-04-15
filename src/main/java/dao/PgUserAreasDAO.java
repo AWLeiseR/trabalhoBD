@@ -20,7 +20,7 @@ import model.UserAreas;
  *
  * @author Alan
  */
-public class PgUserAreasDAO implements DAO<UserAreas> {
+public class PgUserAreasDAO implements UserAreasDAO {
 
     private final Connection connection; 
     
@@ -45,6 +45,11 @@ public class PgUserAreasDAO implements DAO<UserAreas> {
                                 "SELECT  iduser,idareas " +
                                 "FROM revista.userareas " +
                                 "ORDER BY iduser;";
+    
+    private static final String ALL_AREAS_USER_QUERY =
+                                "SELECT idareas " +
+                                "FROM revista.userareas " +
+                                "WHERE iduser = ?;";
 
     @Override
     public void create(UserAreas t) throws SQLException {
@@ -129,6 +134,31 @@ public class PgUserAreasDAO implements DAO<UserAreas> {
                 area.setIdUser(result.getInt("idUser"));
 
                 userAreaList.add(area);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            throw new SQLException("Erro ao listar areas e users.");
+        }
+
+        return userAreaList;
+    }
+
+    @Override
+    public List<UserAreas> todasAreasUser(Integer id) throws SQLException {
+         List<UserAreas> userAreaList = new ArrayList<>();
+         
+        try (PreparedStatement statement = connection.prepareStatement(READ_QUERY_USER)) {
+            statement.setInt(1, id);
+            
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    UserAreas area = new UserAreas();
+                    area.setIdAreas(result.getInt("idAreas"));
+                    area.setIdUser(result.getInt("idUser"));
+
+                    userAreaList.add(area);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);

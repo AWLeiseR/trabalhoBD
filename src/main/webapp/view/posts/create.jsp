@@ -4,7 +4,7 @@
     Author     : Alan
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="Windows-1252"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib tagdir="/WEB-INF/tags/session" prefix="session"%>
 <session:autenticationAutor context="${pageContext.servletContext.contextPath}"/>
@@ -13,11 +13,11 @@
     <head>
         <%@include file="/view/includes/head.jsp" %>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>CriaÃ§Ã£o Postagem</title>
+        <title>Criação Postagem</title>
     </head>
     <body>
         <div class="container">
-            <h2 class="text-center">InserÃ§Ã£o de uma nova postagem</h2>
+            <h2 class="text-center">Inserção de uma nova postagem</h2>
 
             <form
                 class="form"
@@ -26,7 +26,7 @@
                 method="POST" accept-charset="utf-8">
                 
                 <div class="form-group">
-                    <label for="postagem-titulo" class="control-label">TÃ­tulo</label>
+                    <label for="postagem-titulo" class="control-label">Título</label>
                     <input id="postagem-titulo" class="form-control" type="text" name="titulo" required autofocus/>
                 </div>
                 
@@ -41,7 +41,7 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="control-label" for="postagem-conteudo">ConteÃºdo</label>
+                    <label class="control-label" for="postagem-conteudo">Conteúdo</label>
                     <textarea id="postagem-conteudo" class="form-control" type="text" name="conteudo" rows="10" required ></textarea>
                 </div>
                

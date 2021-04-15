@@ -4,18 +4,33 @@
  * and open the template in the editor.
  */
 package model;
-
+import java.sql.Date;
 /**
  *
  * @author Alan
  */
 public class User {
-  private Integer userId;
+    private Integer userId;
   private String nome;
   private String sobrenome;
   private String email;
   private String senha;
   private String funcao;
+  private Date createAt;
+    /**
+     * @return the createAt
+     */
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    /**
+     * @param createAt the createAt to set
+     */
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
+  
 
     /**
      * @return the userId
