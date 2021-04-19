@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.User;
+import model.AuxReport;
 
 /**
  *
@@ -75,6 +76,11 @@ public class PgUserDAO implements UserDAO {
                                 "SELECT userid " +
                                 "FROM revista.users " +
                                 "WHERE email=?;";
+     
+     private static final String GET_USER_PER_DAY =
+                                "SELECT  count(*) as qtd, createat " +
+                                "FROM revista.users " +
+                                "group by createat;";
 
     public PgUserDAO(Connection connection) {
         this.connection = connection;
@@ -363,5 +369,26 @@ public class PgUserDAO implements UserDAO {
 
         return id; 
     }
+
+    @Override
+    public List<AuxReport> getUserPerDay() throws SQLException {
+            List<AuxReport> report = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(GET_USER_PER_DAY);
+             ResultSet result = statement.executeQuery()) {
+            while (result.next()) {
+                AuxReport userRepo = new AuxReport();
+                
+                userRepo.setIntField(result.getInt("qtd"));
+                userRepo.setDateField(result.getDate("createat"));
+                report.add(userRepo);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgUserDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            throw new SQLException("Erro ao listar relatorio.");
+        }
+        return report;
+    }
+    
 
 }

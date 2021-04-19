@@ -11,7 +11,6 @@ import dao.DAOFactory;
 import dao.PostagemDAO;
 import dao.UserDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -99,7 +98,7 @@ public class loginController extends HttpServlet {
                                 request.setAttribute("ordenarPor", ordenarPor);
                             
                             }
-                            System.out.println(session.getAttribute("areaDeBusca"));
+                            //System.out.println(session.getAttribute("areaDeBusca"));
                             List<Postagem> postList = daoPostagem.postagemAreaUser(user.getUserId(),areaDeBusca, ordenarPor);
                             List<AreasDeInteresse> areasList = daoAreas.areasDoUser(user.getUserId());
                             

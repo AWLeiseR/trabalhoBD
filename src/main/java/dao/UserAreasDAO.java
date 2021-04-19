@@ -7,7 +7,6 @@ package dao;
 
 import java.sql.SQLException;
 import java.util.List;
-import model.AreasDeInteresse;
 import model.UserAreas;
 
 /**
@@ -16,4 +15,5 @@ import model.UserAreas;
  */
 public interface UserAreasDAO  extends DAO<UserAreas> {
     public List<UserAreas> todasAreasUser(Integer id) throws SQLException;
+    public void deleteArea(UserAreas x) throws SQLException;
 }

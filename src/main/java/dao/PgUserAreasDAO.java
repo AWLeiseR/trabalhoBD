@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import model.UserAreas;
 
 /**
@@ -39,7 +38,7 @@ public class PgUserAreasDAO implements UserAreasDAO {
 
     private static final String DELETE_QUERY =
                                 "DELETE FROM revista.userareas " +
-                                "WHERE iduser = ?;";
+                                "WHERE iduser = ? ;";
 
     private static final String ALL_QUERY =
                                 "SELECT  iduser,idareas " +
@@ -50,11 +49,15 @@ public class PgUserAreasDAO implements UserAreasDAO {
                                 "SELECT idareas " +
                                 "FROM revista.userareas " +
                                 "WHERE iduser = ?;";
+    
+    private static final String DELETE_QUERY_AREA =
+                                "DELETE FROM revista.userareas " +
+                                "WHERE iduser = ? and idareas = ?;";
 
     @Override
     public void create(UserAreas t) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY)){
-            
+            System.out.println("entrou");
             statement.setInt(1, t.getIdUser());
             
             statement.setInt(2, t.getIdAreas());
@@ -148,14 +151,13 @@ public class PgUserAreasDAO implements UserAreasDAO {
     public List<UserAreas> todasAreasUser(Integer id) throws SQLException {
          List<UserAreas> userAreaList = new ArrayList<>();
          
-        try (PreparedStatement statement = connection.prepareStatement(READ_QUERY_USER)) {
+        try (PreparedStatement statement = connection.prepareStatement(ALL_AREAS_USER_QUERY)) {
             statement.setInt(1, id);
             
             try (ResultSet result = statement.executeQuery()) {
                 while (result.next()) {
                     UserAreas area = new UserAreas();
                     area.setIdAreas(result.getInt("idAreas"));
-                    area.setIdUser(result.getInt("idUser"));
 
                     userAreaList.add(area);
                 }
@@ -167,6 +169,27 @@ public class PgUserAreasDAO implements UserAreasDAO {
         }
 
         return userAreaList;
+    }
+
+    @Override
+    public void deleteArea(UserAreas ua) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(DELETE_QUERY_AREA)) {
+            statement.setInt(1, ua.getIdUser());
+            statement.setInt(2, ua.getIdAreas());
+            System.out.println(ua.getIdUser());
+            System.out.println(ua.getIdAreas());
+            if (statement.executeUpdate() < 1) {
+                throw new SQLException("Erro ao excluir: area não encontrado.");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgAreaDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            if (ex.getMessage().equals("Erro ao excluir: area do user não encontrado.")) {
+                throw ex;
+            } else {
+                throw new SQLException("Erro ao excluir area do user.");
+            }
+        }
     }
     
 }

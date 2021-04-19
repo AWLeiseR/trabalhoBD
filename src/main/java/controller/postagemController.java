@@ -265,7 +265,7 @@ public class postagemController extends HttpServlet {
         RequestDispatcher dispatcher;
             try {
                 daoFactory = DAOFactory.getInstance();
-                DAO<Postagem> dao=daoFactory.getPostagemDAO();
+                PostagemDAO dao=(PostagemDAO)daoFactory.getPostagemDAO();
                 DAO<PostagemAreas> daoPostArea = daoFactory.getPostagemAreasDAO();
                 
                 
@@ -311,14 +311,7 @@ public class postagemController extends HttpServlet {
                     case "/posts/create":{
 
                         try {
-                            Random generate= new Random();
-                            
-                            int id=generate.nextInt(1000);
-                            
-                            post.setPostagemId(id);
-                            
-                            postArea.setIdPostagem(id);
-                            
+                            int id=0;
                             long millis=System.currentTimeMillis();  
                             
                             java.sql.Date data = new java.sql.Date(millis);  
@@ -328,6 +321,10 @@ public class postagemController extends HttpServlet {
                             post.setAlteradoAt(data);
                             
                             dao.create(post);
+                           
+                            postArea.setIdPostagem(dao.getPostId(post.getTitulo()));
+                            
+                            
                             daoPostArea.create(postArea);
                             
                         } catch (SQLException ex) {

@@ -36,7 +36,7 @@
                              
                            <a href="${pageContext.servletContext.contextPath}/posts" class="btn btn-light mb-2">Gerenciar postagens</a>
                             <a href="${pageContext.servletContext.contextPath}/user" class="btn btn-light mb-2">Gerenciar usuários</a>  
-                            <a href="${pageContext.servletContext.contextPath}/user" class="btn btn-light mb-2">Gerenciar usuários</a> 
+                            <a href="${pageContext.servletContext.contextPath}/dashboard" class="btn btn-light mb-2">Dashboard</a> 
                          </c:if>
                       </div>
                     <div class="col-6">

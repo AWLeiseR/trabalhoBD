@@ -118,16 +118,13 @@ public class userController extends HttpServlet {
                     
                     user = (User) session.getAttribute("usuario");
                     
-                    System.out.println("--" + user.getUserId());
-                    System.out.println(Integer.parseInt(request.getParameter("id")));
-                    
                     if(user.getUserId() == Integer.parseInt(request.getParameter("id"))){
                         
                         List<AreasDeInteresse> areasList = daoAreas.all();
                         List<UserAreas> userAreasList = daoUserAreas.todasAreasUser(Integer.parseInt(request.getParameter("id")));
                         
-                        request.setAttribute("areasList", areasList);
-                        request.setAttribute("userAreasList",userAreasList);
+                        session.setAttribute("areasList", areasList);
+                        session.setAttribute("userAreasList",userAreasList);
                         
                         user = dao.read(Integer.parseInt(request.getParameter("id")));
                         request.setAttribute("user", user);
@@ -187,7 +184,7 @@ public class userController extends HttpServlet {
             try {
                 daoFactory = DAOFactory.getInstance();
                 UserDAO dao=(UserDAO) daoFactory.getUserDAO();
-                DAO<UserAreas> daoAreas = daoFactory.getUserAreasDAO();
+                UserAreasDAO daoAreas = (UserAreasDAO) daoFactory.getUserAreasDAO();
                 User user=new User();
                 UserAreas userAreas = new UserAreas();
                 RequestDispatcher dispatcher;
@@ -244,18 +241,32 @@ public class userController extends HttpServlet {
                             userId = Integer.valueOf(request.getParameter("userId"));
                             userAreas.setIdUser(userId);
                             user.setUserId(userId);
-
+                            
                             dao.update(user);
-//                            vet = daoAreas.all();
-//                            int i;
-//                            for(i=0;i<n.length;i++){
-//                                userAreas.setIdAreas(Integer.valueOf(n[i]));
-//                                if(vet.indexOf(Integer.valueOf(n[i]))== -1){
-//                                        userAreas.setIdAreas(Integer.valueOf(n[i]));
-//                                        daoAreas.create(userAreas);
-//                                }
-//                                
-//                            }
+                            
+                            List<UserAreas> s = daoAreas.todasAreasUser(userId);
+                            int i,j,x=1;
+                            if(n != null){
+                              for(i=0;i<n.length;i++){
+                                
+                                for(j=0;j<s.size();j++){
+                                    if(Integer.valueOf(n[i]) == s.get(j).getIdAreas() ){
+                                        s.remove(j);
+                                        x=0;
+                                    }
+                                } 
+                                    if(x == 1){
+                                        userAreas.setIdAreas(Integer.valueOf(n[i]));
+                                        daoAreas.create(userAreas);
+                                    } 
+                                }  
+                            }
+                            
+                            for(j=0;j<s.size();j++){
+                                s.get(j).setIdUser(userId);
+                                daoAreas.deleteArea(s.get(j));
+                            }
+                            
                         } catch (SQLException ex) {
                             Logger.getLogger(userController.class.getName()).log(Level.SEVERE, null, ex);
                         }

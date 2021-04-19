@@ -25,14 +25,15 @@ import model.Postagem;
 public class PgPostagemDAO implements PostagemDAO  {
     
     private final Connection connection;
+    private Object statement;
     
     public PgPostagemDAO(Connection connection) {
         this.connection = connection;
     }
 
     private static final String CREATE_QUERY =
-                                "INSERT INTO revista.postagem(postagemid,titulo,subtitulo,descricao,conteudo,visualizacoes,createAt,alteradoAt,autor) " +
-                                "VALUES(?,?,?,?,?,?,?,?,?);";
+                                "INSERT INTO revista.postagem(titulo,subtitulo,descricao,conteudo,visualizacoes,createAt,alteradoAt,autor) " +
+                                "VALUES(?,?,?,?,?,?,?,?);";
 
     private static final String READ_QUERY =
                                 "SELECT titulo,subtitulo,descricao,conteudo,visualizacoes,createAt,alteradoAt " +
@@ -78,20 +79,24 @@ public class PgPostagemDAO implements PostagemDAO  {
                                     "from revista.userareas, revista.postagemareas, revista.postagem " + 
                                     "where iduser = ? and postagemareas.idareas = ? AND postagem.postagemid = postagemareas.idpostagem "+
                                     "order by ? Limit 3;";
+    
+    private static final String ID_POSTAGEM =
+                                "select postagemid" +
+                                " FROM revista.postagem " +
+                                "WHERE titulo= ?;";
 
     @Override
     public void create(Postagem t) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY)) {
             
-            statement.setInt(1, t.getPostagemId());
-            statement.setString(2, t.getTitulo());
-            statement.setString(3, t.getSubtitulo());
-            statement.setString(4,t.getDescricao());
-            statement.setString(5, t.getConteudo());
-            statement.setInt(6, t.getVisualizacoes());
-            statement.setDate(7, t.getCreateAt());
-            statement.setDate(8, t.getAlteradoAt());
-            statement.setInt(9,t.getAutor());
+            statement.setString(1, t.getTitulo());
+            statement.setString(2, t.getSubtitulo());
+            statement.setString(3,t.getDescricao());
+            statement.setString(4, t.getConteudo());
+            statement.setInt(5, t.getVisualizacoes());
+            statement.setDate(6, t.getCreateAt());
+            statement.setDate(7, t.getAlteradoAt());
+            statement.setInt(8,t.getAutor());
 
             statement.executeUpdate();
         } catch (SQLException ex) {
@@ -367,6 +372,37 @@ public class PgPostagemDAO implements PostagemDAO  {
         }
         
         return postList;
+    }
+
+    @Override
+    public int getPostId(String string) throws SQLException {
+        int i=0;
+        try (PreparedStatement statement = connection.prepareStatement(ID_POSTAGEM)){
+            System.out.println(string);
+            statement.setString(1, string);
+            
+            try(ResultSet result = statement.executeQuery()) {
+                  if (result.next()) {
+                   
+                   i = result.getInt("postagemid");
+                   
+                     System.out.println(i);
+                } else {
+                    throw new SQLException("Erro ao visualizar: postagem não encontrado.");
+                }
+                 
+                 
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+                throw new SQLException("Erro ao listar usuários.");
+            }
+        }catch(SQLException ex){
+            
+        }
+          return i;      
+
     }
     
 }

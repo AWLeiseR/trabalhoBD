@@ -4,6 +4,11 @@
     Author     : Alan
 --%>
 
+<%@page import="java.util.Enumeration"%>
+<%@page import="java.util.List"%>
+<%@page import="model.AreasDeInteresse"%>
+<%@page import="model.UserAreas"%>
+<%@page import="javax.servlet.http.HttpServletRequest"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -18,7 +23,10 @@
             <h2 class="text-center">Modificação de Perfil do usuário</h2>
 
             
-                
+            <form class="form"
+                action="${pageContext.servletContext.contextPath}/user/update"
+                <%--enctype="multipart/form-data"--%>
+                method="POST">
                 <input type="hidden" name="userId" value="${user.userId}">
                 
                 <div class="form-group">
@@ -55,24 +63,56 @@
                 </div>
                     
                 
-                    <label >Escolha uma Área de interesse</label>
-                    <c:forEach var="area" items="${requestScope.areasList}">
-                        <s:when test"${requestScope.userAreasList.indexOf(area.areaId)!= -1}">
-                            <input type="checkbox" id="${area.areaId}" name="areas" value="${area.areaId}" checked>
-                            <label for="${area.areaId}"><c:out value="${area.nome}"/></label><br>
-                        </s:when>
-                        <c:otherwise >
-                              <input type="checkbox" id="${area.areaId}" name="areas" value="${area.areaId}" >
-                                <label for="${area.areaId}"><c:out value="${area.nome}"/></label><br>
-                        </c:otherwise>
-                    </c:forEach>
+                    <label >Escolha uma Área de interesse</label><br>
+                    <%
+                        HttpSession s = request.getSession();
+                        //List<AreasDeInteresse> b =(List<AreasDeInteresse>) requestScope.areasList;
+                        int i,j,x=0;
+                        
+                        List<UserAreas> a = (List<UserAreas>) s.getAttribute("userAreasList" );
+                       List<AreasDeInteresse> b =(List<AreasDeInteresse>) session.getAttribute("areasList");
+                       
+                        for(i=0;i<b.size();i++){
+                            
+                            for(j=0;j<a.size();j++){
+                               if(b.get(i).getAreaId() == a.get(j).getIdAreas()){
+                                    x=1;
+                                    break;
+                                }
+                            }
+                            if(x==1){
+                                out.print("<input type=\"checkbox\" id=\""+ b.get(i).getAreaId() +"\" name=\"areas\" value=\""+ b.get(i).getAreaId() +"\" checked>");
+                            }else{
+                                out.print("<input type=\"checkbox\" id=\""+ b.get(i).getAreaId() +"\" name=\"areas\" value=\""+ b.get(i).getAreaId() +"\">");
+                            }
+                            
+                            out.print("<label for=\""+ b.get(i).getAreaId() +"\">" + b.get(i).getNome() + "</label><br>");
+                            x=0;
+                        }
+                    %>
+                    
+                    <!-- <c:forEach var="area" items="${requestScope.areasList}"> 
+                        <c:forEach var="userAreas" items="${requestScope.userAreasList}">
+                            <c:choose>
+                                <c:when test="${userAreas.idAreas == area.areaId}">
+                                   <input type="checkbox" id="${area.areaId}" name="areas" value="${area.areaId}" checked>
+                                   <label for="${area.areaId}"><c:out value="${area.nome}"/></label><br>
+                               </c:when>
+                               <c:otherwise >
+                                     <input type="checkbox" id="${area.areaId}" name="areas" value="${area.areaId}" >
+                                     <label for="${area.areaId}"><c:out value="${area.nome}"/></label><br>
+                               </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                       
+                    </c:forEach> -->
                 
                     
                     <input type="hidden" name="funcao" value="${user.funcao}">
                 <div class="text-center">
                     <button class="btn btn-lg btn-primary" type="submit">Salvar</button>
                 </div>
-            
+            </form>
         </div>
 
         <%@include file="/view/includes/scripts.jsp" %>

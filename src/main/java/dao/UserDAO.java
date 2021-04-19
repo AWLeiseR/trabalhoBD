@@ -6,7 +6,9 @@
 package dao;
 
 import java.sql.SQLException;
+import java.util.List;
 import model.User;
+import  model.AuxReport;
 
 /**
  *
@@ -19,4 +21,5 @@ public interface UserDAO extends DAO<User> {
     public String getFuncao(int id) throws SQLException;
     public void updateFuncao(int id,String funcao) throws SQLException;
     public int getId(String email) throws SQLException;
+    public List<AuxReport> getUserPerDay() throws SQLException;
 }
