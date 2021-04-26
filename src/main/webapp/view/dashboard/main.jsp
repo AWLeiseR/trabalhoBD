@@ -4,55 +4,34 @@
     Author     : Alan
 --%>
 
-<%@page import="model.AuxReport"%>
-<%@page import="java.util.List"%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+         <%@include file="/view/includes/head.jsp" %>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Dashboard</title>
     </head>
-    
-        <script>
-           
-        </script>
+    <body>
         <div class="container">
-            <canvas id="myChart"></canvas>
-        </div>    
-                
-        <script>
-            let v = [<%= request.getAttribute("repoQtd")%>];
-            let v2 = [<%= request.getAttribute("repoDate")%>];
-            let myChart = document.getElementById('myChart').getContext('2d');
-            let graph = new Chart(myChart,{
-                type:'line',
-                data:{
-                    labels:v2,
-                    datasets:[{
-                            label:'Usuários',
-                            data:v
-                    }],
-                },
-                options:{
-                    title:{
-                      display:true,
-                      text:'inscrição de usuários',
-                      fontSize:25
-                    },
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                }
-            }); 
-        </script>
-        
-    
+            <div class="row justify-content-center">
+                <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/dashboardpost">
+                    relatório postagens
+                </a>
+                <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/dashboardview">
+                     relatório Visualizações
+                </a>
+                <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}/dashboarduser">
+                    relatório Usuários
+                </a>
+            </div></br>
+                    <p>Total de usuarios:  <c:out value="${requestScope.totalUsers}"/></p>
+                    <p>Total de post: <c:out value="${requestScope.totalPost}"/></p>
+                    <p>Total de views: <c:out value="${requestScope.totalView}"/></p>
+        </div>
+                    
+        <%@include file="/view/includes/scripts.jsp" %>
+    </body>    
 </html>

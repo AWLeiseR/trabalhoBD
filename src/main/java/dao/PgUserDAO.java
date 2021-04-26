@@ -78,10 +78,13 @@ public class PgUserDAO implements UserDAO {
                                 "WHERE email=?;";
      
      private static final String GET_USER_PER_DAY =
-                                "SELECT  count(*) as qtd, createat " +
-                                "FROM revista.users " +
-                                "group by createat;";
-
+                                "select (case when table2.num is not null " +
+                                "then table2.num else 0 end) as qtd, table1.dia from (select (date_trunc('day',(current_date-30)::date)::date)+(i*1) as dia " +
+                                "from generate_Series(0,30) i) as table1 full join " +
+                                "(select count(*) as num , createat as dia from revista.users group by createat) as table2 " +
+                                "on table1.dia = table2.dia";
+     private static final String GET_TOTAL_USER =
+                                "select count(*)as total from revista.users";
     public PgUserDAO(Connection connection) {
         this.connection = connection;
     }
@@ -377,10 +380,13 @@ public class PgUserDAO implements UserDAO {
              ResultSet result = statement.executeQuery()) {
             while (result.next()) {
                 AuxReport userRepo = new AuxReport();
+                if(result.getDate("dia") != null){
+                     userRepo.setIntField(result.getInt("qtd"));
                 
-                userRepo.setIntField(result.getInt("qtd"));
-                userRepo.setDateField(result.getDate("createat"));
-                report.add(userRepo);
+                    userRepo.setDateField(result.getDate("dia"));
+                    report.add(userRepo);
+                }
+               
             }
         } catch (SQLException ex) {
             Logger.getLogger(PgUserDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
@@ -388,6 +394,26 @@ public class PgUserDAO implements UserDAO {
             throw new SQLException("Erro ao listar relatorio.");
         }
         return report;
+    }
+
+    @Override
+    public int getTotalUser() throws SQLException {
+        int total;
+        try (PreparedStatement statement = connection.prepareStatement(GET_TOTAL_USER);
+             ResultSet result = statement.executeQuery()) {
+            if (result.next()) {
+
+                     total = result.getInt("total");
+
+            }else{
+                 throw new SQLException("Erro ao visualizar: total de users nao encontrado.");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgUserDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            throw new SQLException("Erro ao pegar total users.");
+        }
+        return total;
     }
     
 

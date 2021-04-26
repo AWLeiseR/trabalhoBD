@@ -5,6 +5,9 @@
  */
 package dao;
 
+import java.sql.SQLException;
+import java.util.List;
+import model.AuxReport;
 import model.Visualizacoes;
 
 /**
@@ -12,5 +15,6 @@ import model.Visualizacoes;
  * @author Alan
  */
 public interface VisualizacoesDAO extends DAO<Visualizacoes>{
-    
+    public List<AuxReport> getViewPerDay() throws SQLException;
+    public int getTotalView()  throws SQLException;
 }

@@ -7,6 +7,7 @@ package dao;
 
 import java.sql.SQLException;
 import java.util.List;
+import model.AuxReport;
 import model.Postagem;
 
 /**
@@ -22,4 +23,6 @@ public interface PostagemDAO extends DAO<Postagem> {
     public void setNumeroVizualizacoes(int id, int num) throws SQLException;
     public List<Postagem> postagemAreaUser(int id,int area, int buscarPor) throws SQLException;
     public int getPostId(String titulo) throws SQLException;
+    public List<AuxReport> getPostPerDay() throws SQLException;
+    public int getTotalPost()  throws SQLException;
 }

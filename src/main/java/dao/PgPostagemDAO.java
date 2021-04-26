@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.AuxReport;
 import model.Postagem;
 
 /**
@@ -84,7 +85,14 @@ public class PgPostagemDAO implements PostagemDAO  {
                                 "select postagemid" +
                                 " FROM revista.postagem " +
                                 "WHERE titulo= ?;";
-
+    private static final String GET_POST_PER_DAY =
+                                "select (case when table2.num is not null " +
+                                "then table2.num else 0 end) as qtd, table1.dia from (select (date_trunc('day',(current_date-30)::date)::date)+(i*1) as dia " +
+                                "from generate_Series(0,30) i) as table1 full join " +
+                                "(select count(*) as num , createat as dia from revista.postagem group by createat) as table2 " +
+                                "on table1.dia = table2.dia";
+    private static final String GET_TOTAL_POST =
+                                "select count(*)as total from revista.postagem";
     @Override
     public void create(Postagem t) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY)) {
@@ -403,6 +411,48 @@ public class PgPostagemDAO implements PostagemDAO  {
         }
           return i;      
 
+    }
+
+    @Override
+    public List<AuxReport> getPostPerDay() throws SQLException {
+        List<AuxReport> report = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(GET_POST_PER_DAY);
+             ResultSet result = statement.executeQuery()) {
+            while (result.next()) {
+                AuxReport userRepo = new AuxReport();
+                
+                 if(result.getDate("dia") != null){
+                     userRepo.setIntField(result.getInt("qtd"));
+                
+                    userRepo.setDateField(result.getDate("dia"));
+                    report.add(userRepo);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgUserDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            throw new SQLException("Erro ao listar relatorio.");
+        }
+        return report;
+    }
+
+    @Override
+    public int getTotalPost() throws SQLException {
+        int total;
+        try (PreparedStatement statement = connection.prepareStatement(GET_TOTAL_POST);
+             ResultSet result = statement.executeQuery()) {
+           if (result.next()) {
+                 total = result.getInt("total");
+                    
+            } else {
+                throw new SQLException("Erro ao visualizar: total de views nao encontrado.");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgUserDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            throw new SQLException("Erro ao pegar total de views.");
+        }
+        return total;
     }
     
 }
