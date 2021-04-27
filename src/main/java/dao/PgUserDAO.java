@@ -83,8 +83,20 @@ public class PgUserDAO implements UserDAO {
                                 "from generate_Series(0,30) i) as table1 full join " +
                                 "(select count(*) as num , createat as dia from revista.users group by createat) as table2 " +
                                 "on table1.dia = table2.dia";
+     
      private static final String GET_TOTAL_USER =
                                 "select count(*)as total from revista.users";
+     
+     private static final String GET_AVERAGE_USER =
+                                "select avg(table3.qtd) as average from (select (case when table2.num is not null " +
+                                "then table2.num else 0 end) as qtd, table1.dia from (select (date_trunc('day',(current_date-30)::date)::date)+(i*1) as dia " +
+                                "from generate_Series(0,30) i) as table1 full join " +
+                                "(select count(*) as num , createat as dia from revista.users group by createat) as table2 " +
+                                "on table1.dia = table2.dia) as table3";
+     
+     private static final String GET_SCORE_USER=
+                                "select * from revista.userScore();";
+     
     public PgUserDAO(Connection connection) {
         this.connection = connection;
     }
@@ -414,6 +426,46 @@ public class PgUserDAO implements UserDAO {
             throw new SQLException("Erro ao pegar total users.");
         }
         return total;
+    }
+
+    @Override
+    public double getAverageUser() throws SQLException {
+         double average;
+        try (PreparedStatement statement = connection.prepareStatement(GET_AVERAGE_USER);
+             ResultSet result = statement.executeQuery()) {
+           if (result.next()) {
+                 average = result.getDouble("average");
+                    
+            } else {
+                throw new SQLException("Erro ao visualizar: total de views nao encontrado.");
+            } 
+        } catch (SQLException ex) {
+            Logger.getLogger(PgUserDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            throw new SQLException("Erro ao pegar total de views.");
+        }
+        return average;
+    
+    }
+
+    @Override
+    public List<AuxReport> getUserScore() throws SQLException {
+        List<AuxReport> report = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(GET_SCORE_USER);
+             ResultSet result = statement.executeQuery()) {
+            while (result.next()) {
+                AuxReport userRepo = new AuxReport();
+               
+                     userRepo.setIntField(result.getInt("score"));
+                    userRepo.setIntFieldTwo(result.getInt("iduser"));
+                    report.add(userRepo);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PgUserDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            throw new SQLException("Erro ao listar relatorio.");
+        }
+        return report;
     }
     
 

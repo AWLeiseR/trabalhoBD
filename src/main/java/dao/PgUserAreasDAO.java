@@ -57,7 +57,6 @@ public class PgUserAreasDAO implements UserAreasDAO {
     @Override
     public void create(UserAreas t) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY)){
-            System.out.println("entrou");
             statement.setInt(1, t.getIdUser());
             
             statement.setInt(2, t.getIdAreas());
@@ -176,8 +175,6 @@ public class PgUserAreasDAO implements UserAreasDAO {
         try (PreparedStatement statement = connection.prepareStatement(DELETE_QUERY_AREA)) {
             statement.setInt(1, ua.getIdUser());
             statement.setInt(2, ua.getIdAreas());
-            System.out.println(ua.getIdUser());
-            System.out.println(ua.getIdAreas());
             if (statement.executeUpdate() < 1) {
                 throw new SQLException("Erro ao excluir: area não encontrado.");
             }

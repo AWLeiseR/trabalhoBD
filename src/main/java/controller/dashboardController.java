@@ -61,6 +61,7 @@ public class dashboardController extends HttpServlet {
             String[] auxString;
             String messages ;
             String messages2 ;
+            double averageView,averagePost,averageUser;
             
          try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
             post = (PostagemDAO) daoFactory.getPostagemDAO();
@@ -79,6 +80,7 @@ public class dashboardController extends HttpServlet {
                     dispatcher.forward(request, response);
                     break;
                case "/dashboardpost":
+                    averagePost = post.getAveragePost();
                     repo = post.getPostPerDay();
                     vet = new String[repo.size()];
                     auxString = new String[repo.size()];
@@ -89,12 +91,15 @@ public class dashboardController extends HttpServlet {
                     }
                     messages = String.join(",", vet);
                     messages2 = String.join(",", auxString);
+                    request.setAttribute("avgPost", averagePost);
                     request.setAttribute("repoQtd", messages);
                     request.setAttribute("repoDate", messages2); 
                     dispatcher = request.getRequestDispatcher("/view/dashboard/post.jsp");
                     dispatcher.forward(request, response);
                    break;
                case "/dashboarduser":
+                   averageUser = user.getAverageUser();
+                   List<AuxReport> score = user.getUserScore();
                     repo = user.getUserPerDay();
                     vet = new String[repo.size()];
                     auxString = new String[repo.size()];
@@ -105,12 +110,18 @@ public class dashboardController extends HttpServlet {
                         }
                         messages = String.join(",", vet);
                         messages2 = String.join(",", auxString);
+                        request.setAttribute("scoreUser",score);
+                        request.setAttribute("avgUser", averageUser);
                         request.setAttribute("repoQtd", messages);
                         request.setAttribute("repoDate", messages2); 
                     dispatcher = request.getRequestDispatcher("/view/dashboard/user.jsp");
                     dispatcher.forward(request, response);
                    break;
                case "/dashboardview":
+                   double balanco = view.getIncreseView();
+                   balanco = Math.round(balanco);
+                   
+                    averageView = view.getAverageView();
                     repo = view.getViewPerDay();
                     vet = new String[repo.size()];
                     auxString = new String[repo.size()];
@@ -121,6 +132,8 @@ public class dashboardController extends HttpServlet {
                     }
                     messages = String.join(",", vet);
                     messages2 = String.join(",", auxString);
+                    request.setAttribute("avgView", averageView);
+                    request.setAttribute("balanco", balanco);
                     request.setAttribute("repoQtd", messages);
                     request.setAttribute("repoDate", messages2); 
                     dispatcher = request.getRequestDispatcher("/view/dashboard/view.jsp");

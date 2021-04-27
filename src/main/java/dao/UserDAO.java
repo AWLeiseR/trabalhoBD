@@ -23,4 +23,6 @@ public interface UserDAO extends DAO<User> {
     public int getId(String email) throws SQLException;
     public List<AuxReport> getUserPerDay() throws SQLException;
     public int getTotalUser()  throws SQLException;
+    public double getAverageUser() throws SQLException;
+    public List<AuxReport> getUserScore() throws SQLException;
 }

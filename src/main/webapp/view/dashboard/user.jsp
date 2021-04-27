@@ -16,7 +16,36 @@
     </head>
     <body>
         <div class="container">
-            <canvas id="myChart"></canvas>
+            <div class="card">
+                <div class="card-header">
+                    <div class="h4">Média de cadastro de usuários mensais:</div>
+                </div>
+                <div class="card-body">
+                    <p> <c:out value="${requestScope.avgUser}"/></p>
+                </div>
+            </div>
+            <div class="container">
+                <canvas id="myChart"></canvas>
+            </div>
+                <div class="h4">Usuários mais engajados</div>
+            <table class="table">
+                <thead>
+                <th class="h4">Score</th>
+                <th class="h4">Id do usuário</th>
+            </thead>
+                <tbody>
+                    <c:forEach var="user" items="${requestScope.scoreUser}">
+                        <tr>
+                            <td>
+                                <p><c:out value="${user.intField}"/></p>
+                            </td>
+                             <td>
+                                <p><c:out value="${user.intFieldTwo}"/></p>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
         </div>
         <script>
             let v = [<%= request.getAttribute("repoQtd")%>];

@@ -61,7 +61,23 @@
                         <span class="card-text">UpdateAt: <c:out value="${post.alteradoAt}"/></span>
                      </div>
             </div>
-                         
+            <div>
+                <span class="h4">Veja essas postagens também:</span>
+                <c:forEach var="post" items="${requestScope.relatedPost}">
+                    <div class="card">
+                        
+                        <a href="${pageContext.servletContext.contextPath}/posts/read?id=${post.postagemId}">
+                            <div class="card-header">
+                               <span class="h4"><c:out value="${post.titulo}"/></span> 
+                            </div>
+                            <div class=" card-text">
+                                <span class="h4"><c:out value="${post.subtitulo}"/></span>
+                            </div>
+                            
+                    </a>
+                    </div></br>
+                </c:forEach>
+            </div>  
             <a class="btn btn-lg btn-primary" href="${pageContext.servletContext.contextPath}">
                 <span>Voltar a pagina principal</span>
             </a>

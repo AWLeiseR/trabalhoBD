@@ -60,39 +60,47 @@ public class PgPostagemDAO implements PostagemDAO  {
                                  "FROM revista.postagem " +
                                  "ORDER BY createAt DESC LIMIT 3;";
     
-    private static final String GET_NUMERO_VIUS=
-                                "SELECT visualizacoes " +
-                                "FROM revista.postagem "+
-                                "WHERE postagemid=?;";
-    
-    private static final String UPDATE_NUMERO_VISUALIZACOES =
-                                "UPDATE revista.postagem " +
-                                "SET visualizacoes=?" +
-                                "WHERE postagemid = ?;";
-    
+      
     private static final String POSTAGENS_MAIS_VISTAS=
                                 "SELECT postagemid, titulo, subtitulo, descricao " +
                                 "FROM revista.postagem "+
                                 "ORDER BY visualizacoes DESC LIMIT 3;";
     
     private static final String POSTAGENS_AREA_DO_USER = 
-                                    "select postagemid,titulo,subtitulo,descricao " +
-                                    "from revista.userareas, revista.postagemareas, revista.postagem " + 
-                                    "where iduser = ? and postagemareas.idareas = ? AND postagem.postagemid = postagemareas.idpostagem "+
-                                    "order by ? Limit 3;";
+                                "select postagemid,titulo,subtitulo,descricao " +
+                                "from revista.userareas, revista.postagemareas, revista.postagem " + 
+                                "where iduser = ? and postagemareas.idareas = ? AND postagem.postagemid = postagemareas.idpostagem "+
+                                "order by ? Limit 3;";
     
     private static final String ID_POSTAGEM =
                                 "select postagemid" +
                                 " FROM revista.postagem " +
                                 "WHERE titulo= ?;";
+    
     private static final String GET_POST_PER_DAY =
                                 "select (case when table2.num is not null " +
                                 "then table2.num else 0 end) as qtd, table1.dia from (select (date_trunc('day',(current_date-30)::date)::date)+(i*1) as dia " +
                                 "from generate_Series(0,30) i) as table1 full join " +
                                 "(select count(*) as num , createat as dia from revista.postagem group by createat) as table2 " +
                                 "on table1.dia = table2.dia";
+    
     private static final String GET_TOTAL_POST =
                                 "select count(*)as total from revista.postagem";
+    
+    private static final String GET_AVERAGE_POST =
+                                "select avg(table3.qtd) as average from (select (case when table2.num is not null " +
+                                "then table2.num else 0 end) as qtd, table1.dia from (select (date_trunc('day',(current_date-30)::date)::date)+(i*1) as dia " +
+                                "from generate_Series(0,30) i) as table1 full join " +
+                                "(select count(*) as num , createat as dia from revista.postagem group by createat) as table2 " +
+                                "on table1.dia = table2.dia) as table3";
+    
+    private static final String GET_RELATED_POST =
+                                "select table2.idpostagem as postagemid,postagem.titulo, postagem.subtitulo from (select visualizacoes.idpostagem from revista.visualizacoes\n" +
+                                "join (select iduser, idpostagem from revista.visualizacoes \n" +
+                                "where idpostagem = ? group by iduser, visualizacoes.idpostagem) as table1\n" +
+                                "on visualizacoes.iduser = table1.iduser and visualizacoes.idpostagem != ?\n" +
+                                "group by visualizacoes.idpostagem ) as table2 join revista.postagemareas on table2.idpostagem = postagemareas.idpostagem \n" +
+                                "join revista.postagem on table2.idpostagem = postagem.postagemid LIMIT  3 ";
     @Override
     public void create(Postagem t) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY)) {
@@ -253,66 +261,6 @@ public class PgPostagemDAO implements PostagemDAO  {
     }
 
     @Override
-    public int numeroVisualizacoes(int id) throws SQLException {
-         int visualizacoes ;
-         
-        try (PreparedStatement statement = connection.prepareStatement(GET_NUMERO_VIUS)) {
-            statement.setInt(1, id);
-            
-            try (ResultSet result = statement.executeQuery()) {
-               
-                
-                if (result.next()) {
-                   
-                   visualizacoes = result.getInt("visualizacoes");
-                   
-                    
-                } else {
-                    throw new SQLException("Erro ao visualizar: postagem não encontrado.");
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
-            
-            if (ex.getMessage().equals("Erro ao visualizar: postagem não encontrado.")) {
-                throw ex;
-            } else {
-                throw new SQLException("Erro ao visualizar postagem.");
-            }
-        }
-
-        return visualizacoes;
-    }
-
-    @Override
-    public void setNumeroVizualizacoes(int id, int num) throws SQLException {
-        String query;
-            
-                query = UPDATE_NUMERO_VISUALIZACOES;
-
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            
-            
-            statement.setInt(1,num);
-            statement.setInt(2,id);
-            
-            if (statement.executeUpdate() < 1) {
-                throw new SQLException("Erro ao editar: postagem não encontrado.");
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
-
-            if (ex.getMessage().equals("Erro ao editar: postagem não encontrado.")) {
-                throw ex;
-            } else if (ex.getMessage().contains("not-null")) {
-                throw new SQLException("Erro ao editar a postagem: pelo menos um campo está em branco.");
-            } else {
-                throw new SQLException("Erro ao editar postagem.");
-            }
-        }
-    }
-
-    @Override
     public List<Postagem> maisVisto() throws SQLException {
          List<Postagem> postList = new ArrayList<>();
 
@@ -453,6 +401,58 @@ public class PgPostagemDAO implements PostagemDAO  {
             throw new SQLException("Erro ao pegar total de views.");
         }
         return total;
+    }
+
+    @Override
+    public double getAveragePost() throws SQLException {
+        double average;
+        try (PreparedStatement statement = connection.prepareStatement(GET_AVERAGE_POST);
+             ResultSet result = statement.executeQuery()) {
+           if (result.next()) {
+               System.out.println(result.getDouble("average"));
+                 average = result.getDouble("average");
+                    
+            } else {
+                throw new SQLException("Erro ao visualizar: total de views nao encontrado.");
+            } 
+        } catch (SQLException ex) {
+            Logger.getLogger(PgUserDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            throw new SQLException("Erro ao pegar total de views.");
+        }
+        return average;
+    }
+
+    @Override
+    public List<Postagem> getRelatedPost(int id) throws SQLException {
+        List<Postagem> postList = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(GET_RELATED_POST)){
+            statement.setInt(1, id);
+            statement.setInt(2, id);
+            try(ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    Postagem post = new Postagem();
+                    
+                    post.setPostagemId(Integer.valueOf(result.getString("postagemid")));
+                    
+                    post.setTitulo(result.getString("titulo"));
+                    post.setSubtitulo(result.getString("subtitulo"));              
+                    postList.add(post);
+                }
+            }catch (SQLException ex) {
+                Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+                throw new SQLException("Erro ao listar postagens.");
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            throw new SQLException("Erro ao listar Postagens.");
+        }
+
+        return postList;
     }
     
 }

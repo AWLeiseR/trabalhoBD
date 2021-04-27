@@ -14,7 +14,7 @@ import java.sql.Date;
 public class AuxReport {
     private int intField;
     private Date dateField;
-    
+    private int intFieldTwo;
     /**
      * @return the intField
      */
@@ -41,6 +41,20 @@ public class AuxReport {
      */
     public void setDateField(Date dateField) {
         this.dateField = dateField;
+    }
+
+    /**
+     * @return the intFieldTwo
+     */
+    public int getIntFieldTwo() {
+        return intFieldTwo;
+    }
+
+    /**
+     * @param intFieldTwo the intFieldTwo to set
+     */
+    public void setIntFieldTwo(int intFieldTwo) {
+        this.intFieldTwo = intFieldTwo;
     }
       
 }   

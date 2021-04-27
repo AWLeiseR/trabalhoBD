@@ -54,6 +54,20 @@ public class PgVisualizacoesDAO implements VisualizacoesDAO {
     
     private static final String GET_TOTAL_VIEW =
                                 "select count(*) as total from revista.visualizacoes";
+    
+    private static final String GET_AVERAGE_VIEW =
+                                "select avg(table3.qtd) as average from (select (case when table2.num is not null " +
+                                "then table2.num else 0 end) as qtd, table1.dia from (select (date_trunc('day',(current_date-30)::date)::date)+(i*1) as dia " +
+                                "from generate_Series(0,30) i) as table1 full join " +
+                                "(select count(*) as num , visualizacaodata as dia from revista.visualizacoes group by visualizacaodata) as table2 " +
+                                "on table1.dia = table2.dia) as table3";
+    
+     private static final String GET_INCREASE_PER =
+                                "select (revista.todayViews()*100)/revista.mediaViewsMonth() as balanco";
+     
+     private static final String GET_VIEW_POST=
+             "select count(*) as views from revista.visualizacoes where idpostagem =?";
+    
     @Override
     public void create(Visualizacoes t) throws SQLException {
        try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY)) {
@@ -165,6 +179,63 @@ public class PgVisualizacoesDAO implements VisualizacoesDAO {
         }
         return total;
         
+    }
+
+    @Override
+    public double getAverageView() throws SQLException {
+        double average;
+        try (PreparedStatement statement = connection.prepareStatement(GET_AVERAGE_VIEW);
+             ResultSet result = statement.executeQuery()) {
+           if (result.next()) {
+                 average = result.getDouble("average");
+            } else {
+                throw new SQLException("Erro ao visualizar: total de views nao encontrado.");
+            } 
+        } catch (SQLException ex) {
+            Logger.getLogger(PgUserDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            throw new SQLException("Erro ao pegar total de views.");
+        }
+        return average;
+    }
+
+    @Override
+    public double getIncreseView() throws SQLException {
+        double balanco;
+        try (PreparedStatement statement = connection.prepareStatement(GET_INCREASE_PER);
+             ResultSet result = statement.executeQuery()) {
+           if (result.next()) {
+                 balanco = result.getDouble("balanco");
+            } else {
+                throw new SQLException("Erro ao visualizar: total de views nao encontrado.");
+            } 
+        } catch (SQLException ex) {
+            Logger.getLogger(PgUserDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+            throw new SQLException("Erro ao pegar total de views.");
+        }
+        return balanco;
+    }
+
+    @Override
+    public int getViewPost(int id) throws SQLException {
+         
+        int i=0;
+        try(PreparedStatement statement = connection.prepareStatement(GET_VIEW_POST)){
+             statement.setInt(1, id);
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    i = result.getInt("views");
+                    
+                } else {
+                    throw new SQLException("Erro ao visualizar: visualizacao não encontrado.");
+                }
+            }
+        }catch (SQLException ex){
+            Logger.getLogger(PgPostagemDAO.class.getName()).log(Level.SEVERE, "DAO", ex);
+
+        }
+        return i;
     }
     
 }

@@ -16,8 +16,35 @@
     </head>
     <body>
         <div class="container">
-            <canvas id="myChart"></canvas>
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="h4">Média de visualizações por dia (30 dias)</div>
+                        </div>
+                        <div class="card-body">
+                             <p><c:out value="${requestScope.avgView}"/></p>
+                        </div>
+                    </div> 
+                </div>
+                <div class="col">
+                    <div class="card">
+                      <div class="card-header">
+                          <div class="h4">Porcentagem de variação diária</div>
+                      </div>
+                      <div class="card-body">
+                          <p> <c:out value="${requestScope.balanco}"/> %</p>
+                      </div>  
+                  </div>  
+                </div>
+            </div>
+           
+            
+            <div class="container">
+                <canvas id="myChart"></canvas>
+            </div>
         </div>
+        
         <script>
             let v = [<%= request.getAttribute("repoQtd")%>];
             let v2 = [<%= request.getAttribute("repoDate")%>];

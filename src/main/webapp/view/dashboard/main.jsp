@@ -27,9 +27,38 @@
                     relatório Usuários
                 </a>
             </div></br>
-                    <p>Total de usuarios:  <c:out value="${requestScope.totalUsers}"/></p>
-                    <p>Total de post: <c:out value="${requestScope.totalPost}"/></p>
-                    <p>Total de views: <c:out value="${requestScope.totalView}"/></p>
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="h4">Total de post:</div>
+                        </div>
+                        <div class="card-body">
+                            <p> <c:out value="${requestScope.totalPost}"/></p>
+                        </div>
+                    </div>
+                </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="h4">Total de usuarios: </div>
+                            </div>
+                            <div class="card-body">
+                                <p> <c:out value="${requestScope.totalUsers}"/></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="h4">Total de views:</div>
+                            </div>
+                            <div class="card-body">
+                                <p> <c:out value="${requestScope.totalView}"/></p>
+                            </div>
+                        </div>
+                    </div> 
+            </div>      
         </div>
                     
         <%@include file="/view/includes/scripts.jsp" %>

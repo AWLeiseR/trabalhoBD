@@ -17,4 +17,7 @@ import model.Visualizacoes;
 public interface VisualizacoesDAO extends DAO<Visualizacoes>{
     public List<AuxReport> getViewPerDay() throws SQLException;
     public int getTotalView()  throws SQLException;
+    public double getAverageView() throws SQLException;
+    public double getIncreseView() throws SQLException;
+    public int getViewPost(int id) throws SQLException;
 }

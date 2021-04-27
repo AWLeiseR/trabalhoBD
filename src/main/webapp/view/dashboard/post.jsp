@@ -16,7 +16,21 @@
     </head>
     <body>
         <div class="container">
-            <canvas id="myChart"></canvas>
+            <div class="card">
+                <div class="card-header">
+                    <div class="h4">
+                        Média de postagens mensais: 
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p><c:out value="${requestScope.avgPost}"/></p>
+                </div>
+            </div>
+            
+        
+            <div class="container">
+                <canvas id="myChart"></canvas>
+            </div>
         </div>
         <script>
             let v = [<%= request.getAttribute("repoQtd")%>];

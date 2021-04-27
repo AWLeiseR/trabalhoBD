@@ -145,6 +145,7 @@ public class postagemController extends HttpServlet {
                 
                 case "/posts/read":{
                 try ( DAOFactory daoFactory = DAOFactory.getInstance()) {
+                    
                     dao = daoFactory.getPostagemDAO();
                     visualizacao = new Visualizacoes();
                     daoPost = (PostagemDAO) daoFactory.getPostagemDAO();
@@ -158,15 +159,17 @@ public class postagemController extends HttpServlet {
                         visualizacao.setIdUser(user.getUserId());
                         session.setAttribute("usuario",user);
                         request.setAttribute("aux",aux);
+                        List<Postagem> relatedPost = daoPost.getRelatedPost(Integer.valueOf(request.getParameter("id")));
+                        request.setAttribute("relatedPost", relatedPost);
                     }
                     visualizacao.setIdPostagem(Integer.valueOf(request.getParameter("id")));
                     
                     visualizacao.setVisualizacaoData(date);
                     
                     daoViews.create(visualizacao);
-                    
+                    int views = daoViews.getViewPost(Integer.valueOf(request.getParameter("id")));
                     post = dao.read(Integer.valueOf(request.getParameter("id")));
-                    
+                    post.setVisualizacoes(views);
                     request.setAttribute("post", post);
 
                     dispatcher = request.getRequestDispatcher("/view/posts/read.jsp");
